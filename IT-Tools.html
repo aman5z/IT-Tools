@@ -1,343 +1,334 @@
-
 <!DOCTYPE html> 
 <html>
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>IT-Tools</title>
-
   <style>
- #themeToggle {
-  position: fixed;
-bottom: 25px;
- left: 15px;
-  width: 45px;
-  height: 45px;
-  border-radius: 50%;
-  background: var(--box-bg);
-  color: var(--text);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 22px;
-  cursor: pointer;
-  z-index: 2000;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-  transition: background 0.3s, color 0.3s, transform 0.3s;
-  font-family: "Segoe UI Emoji", "Apple Color Emoji", "Noto Color Emoji", sans-serif;
-}
-
-    
-    
-  
-    
-    
-  /* =========== THEME VARIABLES =========== */
   :root {
     --bg: #f5f5f5;
     --text: #000;
     --box-bg: #fff;
     --console-bg: #000;
     --console-text: #0f0;
+    --border: #ccc;
   }
-
   body.dark {
     --bg: #111;
     --text: #eee;
     --box-bg: #1b1b1b;
     --console-bg: #000;
     --console-text: #0f0;
+    --border: #444;
   }
-
+  * { box-sizing: border-box; }
   body {
     background: var(--bg);
     color: var(--text);
-    font-family: Arial, sans-serif; 
-    margin: 0px; 
+    font-family: Arial, sans-serif;
+    margin: 0;
+    transition: background 0.3s, color 0.3s;
+  }
+
+  /* ── TOPBAR ── */
+  .topbar-sticky {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    background: var(--bg);
+    border-bottom: 1px solid var(--border);
+    transition: background 0.3s;
+  }
+  .topbar {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 10px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .topbar h2 { margin: 0; font-size: 20px; }
+
+  #themeToggle {
+    width: 42px; height: 42px;
+    border-radius: 50%;
+    background: var(--box-bg);
+    color: var(--text);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px;
+    cursor: pointer;
+    border: 1px solid var(--border);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    transition: background 0.3s;
+    font-family: "Segoe UI Emoji", "Apple Color Emoji", "Noto Color Emoji", sans-serif;
+    flex-shrink: 0;
+  }
+
+  /* ── PAGE WRAP ── */
+  .page-wrap {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 20px;
   }
 
   .tool-box {
     background: var(--box-bg);
-    padding: 20px; 
-    margin-bottom: 30px; 
-    border-radius: 10px; 
-    box-shadow: 0 4px 15px rgba(0,0,0,0.1); 
+    padding: 20px;
+    margin-bottom: 24px;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+    border: 1px solid var(--border);
+    transition: background 0.3s;
   }
+  .tool-box h3 { margin-top: 0; margin-bottom: 14px; }
 
   pre {
     background: var(--console-bg) !important;
     color: var(--console-text) !important;
-    padding:10px;
-    border-radius:6px;
-    border:1px solid #444;
-    white-space:pre-wrap;
-    overflow-x:auto;
+    padding: 10px;
+    border-radius: 6px;
+    border: 1px solid #444;
+    white-space: pre-wrap;
+    overflow-x: auto;
+    font-size: 13px;
   }
 
-  h2 { text-align: center; margin-bottom: 40px; }
-
-  input, textarea, button { 
-    padding: 8px; 
-    margin: 5px 0; 
-    width: 100%; 
+  input, textarea {
+    padding: 9px;
+    margin: 5px 0;
+    width: 100%;
     font-size: 14px;
-    border-radius: 5px;
-    border: 1px solid #ccc;
-    background-color: var(--box-bg);
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    background: var(--box-bg);
     color: var(--text);
     box-sizing: border-box;
+    transition: border 0.2s;
   }
+  input:focus, textarea:focus { outline: none; border-color: #007BFF; }
 
-  button { 
-    cursor: pointer; 
-    background-color: #007BFF;
+  button {
+    cursor: pointer;
+    background: #007BFF;
     color: #fff;
-    border: none; 
-    padding: 10px;
+    border: none;
+    padding: 9px 14px;
+    border-radius: 6px;
+    font-size: 14px;
+    transition: background 0.2s, transform 0.1s;
+    margin-top: 6px;
   }
-  button:hover { background-color: #0056b3; }
+  button:hover { background: #0056b3; }
+  button:active { transform: scale(0.97); }
 
   .output-wrapper {
     display: flex;
-    flex-direction: column; 
-    align-items: stretch;   
+    flex-direction: column;
     gap: 5px;
-    margin-top: 5px;
+    margin-top: 8px;
+  }
+
+  .button-row {
+    display: flex;
+    flex-direction: row;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-top: 8px;
+  }
+  .button-row button {
+    flex: 1;
+    min-width: 100px;
+    white-space: nowrap;
   }
 
   footer {
     text-align: center;
-    padding: 10px;
-    color: #555;
-    margin-top: 40px;
-    border-top: 1px solid #ccc;
+    padding: 16px;
+    color: #888;
+    margin-top: 30px;
+    border-top: 1px solid var(--border);
+    font-size: 13px;
   }
-    
-    
-.button-row {
-  display: flex;
-  flex-direction: row;
-  gap: 10px;
-  flex-wrap: wrap; /* keeps buttons on multiple lines if too many */
-}
 
-.button-row button {
-  flex: 1;             /* stretch buttons evenly across row */
-  min-width: 120px;    /* ensures buttons aren’t too tiny */
-  padding: 10px 20px;  /* make them taller/wider */
-  font-size: 14px;     /* readable size */
-  white-space: nowrap;  /* prevent text wrapping */
-}
+  /* Drop zone */
+  #dropArea {
+    border: 2px dashed #666;
+    padding: 25px;
+    text-align: center;
+    border-radius: 10px;
+    background: var(--bg);
+    cursor: pointer;
+    transition: border-color 0.2s;
+  }
+  #dropArea:hover { border-color: #007BFF; }
 
-
-body, .post, .post-body, .content, .main-inner {
-    margin: 0 !important;
-    padding: 0 !important;
-}
-
-
+  @media(max-width: 600px){
+    .page-wrap { padding: 10px; }
+    .button-row button { min-width: 70px; font-size: 12px; padding: 7px; }
+    .topbar h2 { font-size: 16px; }
+    .tool-box { padding: 14px; }
+  }
   </style>
 </head>
-
 <body>
 
+<!-- TOPBAR -->
+<div class="topbar-sticky">
+  <div class="topbar">
+    <h2>🛠️ IT Tools</h2>
+    <div id="themeToggle" onclick="toggleTheme()">🌙</div>
+  </div>
+</div>
 
-<div id="themeToggle" onclick="toggleTheme()">🌙</div>
+<div class="page-wrap">
 
-
-
-<!-- === FILE UPLOAD + QR CODE BOX === -->
-
-
-<div class="tool-box" style="margin-top:20px;">
-  <h3>Upload File to Google Drive + Generate QR</h3>
-
-  <!-- Drop Zone -->
-  <div id="dropArea" 
-       style="border:2px dashed #666; 
-              padding:25px; 
-              text-align:center; 
-              border-radius:10px;
-              background:#fafafa;
-              cursor:pointer;">
+<!-- FILE UPLOAD + QR -->
+<div class="tool-box">
+  <h3>📁 Upload File to Google Drive + Generate QR</h3>
+  <div id="dropArea">
     Drag & drop files here OR click to select
     <input type="file" id="fileInput" style="display:none;">
   </div>
-
-  <!-- Upload Buttons -->
-  <div style="margin-top:10px; display:flex; gap:10px;">
-    <button onclick="startUpload()" 
-            id="uploadBtn" 
-            style="padding:10px 18px; cursor:pointer;">
-      Upload
-    </button>
-
-    <button onclick="startUpload(true)" 
-            id="uploadQRBtn" 
-            style="padding:10px 18px; cursor:pointer; background:#28a745; color:white;">
-      Upload + Generate QR
-    </button>
+  <div class="button-row" style="margin-top:10px;">
+    <button onclick="startUpload()">Upload</button>
+    <button onclick="startUpload(true)" style="background:#28a745;">Upload + Generate QR</button>
   </div>
-
-  <!-- Status Log -->
-  <div class="output-wrapper" style="margin-top:10px;">
+  <div class="output-wrapper">
     <pre id="uploadStatus">Waiting for file...</pre>
   </div>
-
-  <!-- QR Code Display -->
-<div id="qrSection" style="display:none;">
+  <div id="qrSection" style="display:none;">
     <h4>QR Code:</h4>
     <div id="qrOutput"></div>
-
-
-<div style="margin-top:10px; display:flex; gap:10px;">
-  <button onclick="copyQR()">Copy QR</button>
-  <button onclick="downloadQR()">Download QR</button>
-  <button onclick="shareQR()">Share QR</button> <!-- New button -->
-</div>
-
+    <div class="button-row">
+      <button onclick="copyQR()">Copy QR</button>
+      <button onclick="downloadQR()">Download QR</button>
+      <button onclick="shareQR()">Share QR</button>
     </div>
   </div>
+</div>
 
-
-  <!-- QR Code Generator -->
+<!-- QR CODE GENERATOR -->
 <div class="tool-box">
-  <h3>QR Code Generator</h3>
-  <input type="text" id="qrcodeInput" placeholder="Enter text/URL">
-  <div id="qrcode"></div>
-  <div style="margin-top:10px; display:flex; gap:10px;">
+  <h3>📷 QR Code Generator</h3>
+  <input type="text" id="qrcodeInput" placeholder="Enter text or URL">
+  <div id="qrcode" style="margin-top:10px;"></div>
+  <div class="button-row">
     <button onclick="copyQRCode()">Copy QR</button>
     <button onclick="downloadQRCode()">Download QR</button>
-    <button onclick="shareQRCode()">Share QR</button> <!-- Optional if you add share function -->
+    <button onclick="shareQRCode()">Share QR</button>
   </div>
 </div>
 
-
-
-
-
-<!-- Barcode Generator -->
+<!-- BARCODE GENERATOR -->
 <div class="tool-box">
-  <h3>Barcode Generator</h3>
-  <input type="text" id="barcodeInput" placeholder="Enter text/number">
-  <svg id="barcode"></svg> 
-  <div style="margin-top:10px; display:flex; gap:10px;">
+  <h3>🔲 Barcode Generator</h3>
+  <input type="text" id="barcodeInput" placeholder="Enter text or number">
+  <svg id="barcode" style="display:none;margin-top:10px;width:100%;"></svg>
+  <div class="button-row">
     <button onclick="copyBarcode()">Copy Barcode</button>
     <button onclick="downloadBarcode()">Download Barcode</button>
     <button onclick="shareBarcode()">Share Barcode</button>
   </div>
 </div>
 
-
-<!-- PDF Tools -->
+<!-- PDF TOOLS -->
 <div class="tool-box">
-  <h3>PDF Tools</h3>
-
+  <h3>📄 PDF Tools</h3>
   <label>Merge PDFs:</label>
   <input type="file" id="mergeFiles" multiple accept=".pdf">
-  <button onclick="mergePDFs()">Merge</button>
-
-  <label style="margin-top:10px;">Split PDF:</label>
+  <button onclick="mergePDFs()">Merge PDFs</button>
+  <label style="margin-top:12px;display:block;">Split PDF:</label>
   <input type="file" id="splitFile" accept=".pdf">
-  <input type="number" id="splitPage" placeholder="Page number to split at" style="width:100px;">
-  <button onclick="splitPDF()">Split</button>
-
+  <input type="number" id="splitPage" placeholder="Page number to split at" style="width:180px;">
+  <button onclick="splitPDF()">Split PDF</button>
   <div class="output-wrapper">
     <pre id="pdfOutput"></pre>
     <button onclick="copyOutput('pdfOutput')">Copy Logs</button>
   </div>
 </div>
 
-
-
-<!-- Unified Network Tools & Hosting Checker -->
+<!-- NETWORK TOOLS -->
 <div class="tool-box">
-  <h3>Network & Hosting Tools</h3>
+  <h3>🌐 Network & Hosting Tools</h3>
   <input type="text" id="networkInput" placeholder="Enter IP, URL, or domain">
-
-  <!-- Horizontal buttons -->
-<div class="button-row" style="margin-top:5px;">
-  <button onclick="getIpInfo()">IP Info</button>
-  <button onclick="urlToIp()">URL → IP</button>
-  <button onclick="dnsLookup()">DNS Lookup</button>
-  <button onclick="checkHosting()">Check Hosting</button>
-  <button onclick="shortenURL()">Shorten URL</button> <!-- NEW -->
-</div>
-
-  <div class="output-wrapper" style="margin-top:10px;">
+  <div class="button-row">
+    <button onclick="getIpInfo()">IP Info</button>
+    <button onclick="urlToIp()">URL → IP</button>
+    <button onclick="dnsLookup()">DNS Lookup</button>
+    <button onclick="checkHosting()">Check Hosting</button>
+    <button onclick="shortenURL()">Shorten URL</button>
+  </div>
+  <div class="output-wrapper">
     <pre id="networkOutput"></pre>
     <button onclick="copyOutput('networkOutput')">Copy</button>
   </div>
 </div>
-  
-  <!-- Subnet Calculator -->
-  <div class="tool-box">
-    <h3>Subnet Calculator</h3>
-    <input type="text" id="ip" placeholder="Enter IP address (e.g., 192.168.1.10)">
-    <input type="text" id="cidr" placeholder="Enter CIDR (e.g., 24)">
-    <button onclick="calculateSubnet()">Calculate</button>
-    <div class="output-wrapper">
-      <pre id="subnetOutput"></pre>
-      <button onclick="copyOutput('subnetOutput')">Copy</button>
-    </div>
-  </div>
 
-    
+<!-- SUBNET CALCULATOR -->
+<div class="tool-box">
+  <h3>🔢 Subnet Calculator</h3>
+  <input type="text" id="ip" placeholder="IP address (e.g. 192.168.1.10)">
+  <input type="text" id="cidr" placeholder="CIDR (e.g. 24)">
+  <button onclick="calculateSubnet()">Calculate</button>
+  <div class="output-wrapper">
+    <pre id="subnetOutput"></pre>
+    <button onclick="copyOutput('subnetOutput')">Copy</button>
+  </div>
+</div>
+
 <!-- PING -->
 <div class="tool-box">
-  <h3>PING</h3>
-  <label>Ping URL (CORS-enabled or your server):</label>
-  <input type="text" id="pingInput" placeholder="e.g., https://api.github.com">
-  <label>Interval (seconds):</label>
-  <input type="number" id="pingInterval" value="5" style="width:100px;">
-  <div style="margin-top:10px; display:flex; gap:10px;">
+  <h3>📡 Ping / Monitor</h3>
+  <input type="text" id="pingInput" placeholder="e.g. https://api.github.com">
+  <input type="number" id="pingInterval" value="5" placeholder="Interval (seconds)" style="width:160px;">
+  <div class="button-row">
     <button onclick="startMonitoring()">Start</button>
-    <button onclick="stopMonitoring()">Stop</button>
+    <button onclick="stopMonitoring()" style="background:#ef4444;">Stop</button>
   </div>
-  <div class="output-wrapper" style="margin-top:10px;">
+  <div class="output-wrapper">
     <pre id="pingOutput">Ping results will appear here...</pre>
   </div>
 </div>
 
-
-  <!-- Base64 Tool -->
+<!-- BASE64 -->
 <div class="tool-box">
-  <h3>Base64 Encode / Decode</h3>
-  <input type="text" id="b64input" placeholder="Enter text here">
-  <div style="margin-top:10px; display:flex; gap:10px;">
+  <h3>🔐 Base64 Encode / Decode</h3>
+  <input type="text" id="b64input" placeholder="Enter text">
+  <div class="button-row">
     <button onclick="encodeB64()">Encode</button>
     <button onclick="decodeB64()">Decode</button>
   </div>
-  <div class="output-wrapper" style="margin-top:10px;">
+  <div class="output-wrapper">
     <pre id="b64output"></pre>
     <button onclick="copyOutput('b64output')">Copy</button>
   </div>
 </div>
 
-<!-- Hex / Dec / Binary Converter -->
+<!-- HEX/DEC/BIN -->
 <div class="tool-box">
-  <h3>Hex / Dec / Binary Converter</h3>
-  <input id="numberInput" placeholder="Enter number">
+  <h3>🔄 Hex / Dec / Binary Converter</h3>
+  <input id="numberInput" placeholder="Enter decimal, hex (0x...) or binary">
   <button onclick="convertNumber()">Convert</button>
-  <div class="output-wrapper" style="margin-top:10px;">
+  <div class="output-wrapper">
     <pre id="numberResult"></pre>
     <button onclick="copyOutput('numberResult')">Copy</button>
   </div>
 </div>
 
-<!-- Password Generator -->
+<!-- PASSWORD GENERATOR -->
 <div class="tool-box">
-  <h3>Password Generator</h3>
-  <button onclick="genPass()">Generate</button>
-  <div class="output-wrapper" style="margin-top:10px;">
+  <h3>🔑 Password Generator</h3>
+  <button onclick="genPass()">Generate Password</button>
+  <div class="output-wrapper">
     <pre id="passOut"></pre>
     <button onclick="copyOutput('passOut')">Copy</button>
   </div>
 </div>
-  
-<!-- MAC Vendor Lookup -->
+
+<!-- MAC LOOKUP -->
 <div class="tool-box">
-  <h3>MAC Vendor Lookup</h3>
-  <input type="text" id="macInput" placeholder="Enter MAC address (e.g., 00:1A:2B:3C:4D:5E)">
+  <h3>🖧 MAC Vendor Lookup</h3>
+  <input type="text" id="macInput" placeholder="e.g. 00:1A:2B:3C:4D:5E">
   <button onclick="lookupMac()">Lookup</button>
   <div class="output-wrapper">
     <pre id="macOutput"></pre>
@@ -345,10 +336,9 @@ body, .post, .post-body, .content, .main-inner {
   </div>
 </div>
 
-
-<!-- System Info Viewer -->
+<!-- SYSTEM INFO -->
 <div class="tool-box">
-  <h3>System Info Viewer</h3>
+  <h3>💻 System Info Viewer</h3>
   <button onclick="showSystemInfo()">View System Info</button>
   <div class="output-wrapper">
     <pre id="sysInfoOutput">Press the button to view system info...</pre>
@@ -356,882 +346,360 @@ body, .post, .post-body, .content, .main-inner {
   </div>
 </div>
 
-    
+<footer>IT Tools — Built for internal use</footer>
 
+</div><!-- end page-wrap -->
 
-</script>
-
-
-  <script src="https://apis.google.com/js/api.js"></script>
-
-  
- <!-- JsBarcode Library -->
+<!-- SCRIPTS -->
+<script src="https://apis.google.com/js/api.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/pdf-lib/dist/pdf-lib.min.js"></script>
 
-  <!-- QR Code Library -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-
-
-
-  <script>
-
-    /* --------------------------
-       SUBNET CALCULATOR
-    ---------------------------*/
-    function calculateSubnet() {
-      let ip = document.getElementById('ip').value.trim();
-      let cidr = parseInt(document.getElementById('cidr').value.trim());
-
-      if (!ip || isNaN(cidr) || cidr < 0 || cidr > 32) {
-        alert("Invalid IP or CIDR");
-        return;
-      }
-
-      let octets = ip.split('.').map(Number);
-      if (octets.length !== 4 || octets.some(o => o < 0 || o > 255)) {
-        alert("Invalid IP format");
-        return;
-      }
-
-      let ipInt = ((octets[0]<<24)>>>0) + (octets[1]<<16) + (octets[2]<<8) + octets[3];
-
-      let maskInt = cidr === 0 ? 0 : (~0 << (32 - cidr)) >>> 0;
-      let mask = [(maskInt>>>24)&255,(maskInt>>>16)&255,(maskInt>>>8)&255,maskInt&255].join('.');
-
-      let networkInt = ipInt & maskInt;
-      let network = [(networkInt>>>24)&255,(networkInt>>>16)&255,(networkInt>>>8)&255,networkInt&255].join('.');
-
-      let broadcastInt = networkInt | (~maskInt >>> 0);
-      let broadcast = [(broadcastInt>>>24)&255,(broadcastInt>>>16)&255,(broadcastInt>>>8)&255,broadcastInt&255].join('.');
-
-      let hostCount = cidr >= 31 ? 0 : Math.pow(2, 32 - cidr) - 2;
-
-      document.getElementById('subnetOutput').textContent =
-        `IP Address: ${ip}
-CIDR: /${cidr}
-Subnet Mask: ${mask}
-Network Address: ${network}
-Broadcast Address: ${broadcast}
-Usable Hosts: ${hostCount}`;
-    }
-
-    /* --------------------------
-       BASE64 TOOL
-    ---------------------------*/
-    function encodeB64() {
-      let val = document.getElementById('b64input').value;
-      document.getElementById('b64output').textContent = btoa(val);
-    }
-
-    function decodeB64() {
-      let val = document.getElementById('b64input').value;
-      try {
-        document.getElementById('b64output').textContent = atob(val);
-      } catch {
-        document.getElementById('b64output').textContent = "Invalid Base64";
-      }
-    }
-
-    
-    /* --------------------------
-       QR CODE GENERATOR
-    ---------------------------*/
-    let qr;
-
-    document.getElementById('qrcodeInput').addEventListener('input', function() {
-      document.getElementById('qrcode').innerHTML = "";
-
-      if (this.value.trim() === "") return;
-
-      qr = new QRCode(document.getElementById('qrcode'), {
-        text: this.value,
-        width: 150,
-        height: 150
-      });
-    });
-
-    function copyQRCode() {
-      const img = document.querySelector('#qrcode img');
-      if (!img) return alert("Generate a QR first!");
-
-      fetch(img.src)
-        .then(res => res.blob())
-        .then(blob =>
-          navigator.clipboard.write([new ClipboardItem({ "image/png": blob })])
-        )
-        .then(() => alert("QR copied!"))
-        .catch(() => alert("Copy failed"));
-    }
-
-    function downloadQRCode() {
-      const img = document.querySelector('#qrcode img');
-      if (!img) return alert("Generate a QR first!");
-
-      const link = document.createElement('a');
-      link.href = img.src;
-      link.download = "qrcode.png";
-      link.click();
-    }
-    
-    
-    
-    async function shareQRCode() {
-  const img = document.querySelector('#qrcode img');
-  if (!img) return alert("No QR code to share!");
-
-  try {
-    const blob = await fetch(img.src).then(res => res.blob());
-    const file = new File([blob], "QR_Code.png", { type: blob.type });
-
-    if (navigator.canShare && navigator.canShare({ files: [file] })) {
-      await navigator.share({
-        files: [file],
-        title: "QR Code",
-        text: "Here’s a QR code!"
-      });
-    } else {
-      alert("Sharing not supported on this device. Please download or copy the QR.");
-    }
-  } catch (err) {
-    alert("Failed to share QR code: " + err);
-  }
+<script>
+/* ── THEME ── */
+function toggleTheme(){
+  document.body.classList.toggle("dark");
+  const isDark = document.body.classList.contains("dark");
+  document.getElementById("themeToggle").textContent = isDark ? "☀️" : "🌙";
+  localStorage.setItem("theme", isDark ? "dark" : "light");
 }
+window.addEventListener("load", ()=>{
+  const saved = localStorage.getItem("theme");
+  if(saved === "dark"){
+    document.body.classList.add("dark");
+    document.getElementById("themeToggle").textContent = "☀️";
+  }
+});
 
-    
-    
-    
-    
-    
-/* --------------------------
-   COPY OUTPUT FUNCTION
----------------------------*/
-function copyOutput(id) {
+/* ── COPY OUTPUT ── */
+function copyOutput(id){
   const text = document.getElementById(id).textContent;
-  if (!text) {
-    alert("Nothing to copy!");
-    return;
-  }
-  navigator.clipboard.writeText(text)
-    .then(() => alert("Copied to clipboard!"))
-    .catch(() => alert("Copy failed!"));
+  if(!text.trim()) return alert("Nothing to copy!");
+  navigator.clipboard.writeText(text).then(()=>alert("Copied!")).catch(()=>alert("Copy failed"));
 }
 
+/* ── SUBNET CALCULATOR ── */
+function calculateSubnet(){
+  let ip = document.getElementById('ip').value.trim();
+  let cidr = parseInt(document.getElementById('cidr').value.trim());
+  if(!ip || isNaN(cidr) || cidr<0 || cidr>32){ alert("Invalid IP or CIDR"); return; }
+  let oct = ip.split('.').map(Number);
+  if(oct.length!==4 || oct.some(o=>o<0||o>255)){ alert("Invalid IP format"); return; }
+  let ipInt = ((oct[0]<<24)>>>0)+(oct[1]<<16)+(oct[2]<<8)+oct[3];
+  let maskInt = cidr===0?0:(~0<<(32-cidr))>>>0;
+  let mask = [(maskInt>>>24)&255,(maskInt>>>16)&255,(maskInt>>>8)&255,maskInt&255].join('.');
+  let networkInt = ipInt & maskInt;
+  let network = [(networkInt>>>24)&255,(networkInt>>>16)&255,(networkInt>>>8)&255,networkInt&255].join('.');
+  let bcInt = networkInt|(~maskInt>>>0);
+  let broadcast = [(bcInt>>>24)&255,(bcInt>>>16)&255,(bcInt>>>8)&255,bcInt&255].join('.');
+  let hosts = cidr>=31?0:Math.pow(2,32-cidr)-2;
+  document.getElementById('subnetOutput').textContent =
+`IP Address:        ${ip}
+CIDR:              /${cidr}
+Subnet Mask:       ${mask}
+Network Address:   ${network}
+Broadcast Address: ${broadcast}
+Usable Hosts:      ${hosts}`;
+}
+document.getElementById('ip').addEventListener('keypress',e=>{ if(e.key==="Enter") calculateSubnet(); });
+document.getElementById('cidr').addEventListener('keypress',e=>{ if(e.key==="Enter") calculateSubnet(); });
 
-    /* --------------------------
-       ENTER KEY SUPPORT
-    ---------------------------*/
-    document.getElementById('ip').addEventListener('keypress', e => {
-      if (e.key === "Enter") calculateSubnet();
-    });
-    document.getElementById('cidr').addEventListener('keypress', e => {
-      if (e.key === "Enter") calculateSubnet();
-    });
-    document.getElementById('b64input').addEventListener('keypress', e => {
-      if (e.key === "Enter") encodeB64();
-    });
+/* ── BASE64 ── */
+function encodeB64(){ document.getElementById('b64output').textContent = btoa(document.getElementById('b64input').value); }
+function decodeB64(){
+  try{ document.getElementById('b64output').textContent = atob(document.getElementById('b64input').value); }
+  catch{ document.getElementById('b64output').textContent = "Invalid Base64"; }
+}
+document.getElementById('b64input').addEventListener('keypress',e=>{ if(e.key==="Enter") encodeB64(); });
 
-    /* -------------------------- */
-
-
-
-  // MAC Vendor Lookup
-  function lookupMac() {
-    const mac = document.getElementById('macInput').value.trim();
-    if(!mac) return alert('Enter a MAC address');
-fetch(`https://api.macvendors.com/${mac}`)
-      .then(res => res.text())
-      .then(data => document.getElementById('macOutput').textContent = data)
-      .catch(err => document.getElementById('macOutput').textContent = 'Lookup failed');
-  }
-
-
-
-
-function copyOutput(id) {
-    const text = document.getElementById(id).textContent;
-    navigator.clipboard.writeText(text);
+/* ── QR CODE ── */
+let qr;
+document.getElementById('qrcodeInput').addEventListener('input', function(){
+  document.getElementById('qrcode').innerHTML = "";
+  if(!this.value.trim()) return;
+  qr = new QRCode(document.getElementById('qrcode'), { text:this.value, width:160, height:160 });
+});
+function copyQRCode(){
+  const img = document.querySelector('#qrcode img');
+  if(!img) return alert("Generate a QR first!");
+  fetch(img.src).then(r=>r.blob()).then(blob=>navigator.clipboard.write([new ClipboardItem({"image/png":blob})])).then(()=>alert("QR copied!")).catch(()=>alert("Copy failed"));
+}
+function downloadQRCode(){
+  const img = document.querySelector('#qrcode img');
+  if(!img) return alert("Generate a QR first!");
+  const a = document.createElement('a'); a.href=img.src; a.download="qrcode.png"; a.click();
+}
+async function shareQRCode(){
+  const img = document.querySelector('#qrcode img');
+  if(!img) return alert("No QR code to share!");
+  const blob = await fetch(img.src).then(r=>r.blob());
+  const file = new File([blob],"QR_Code.png",{type:blob.type});
+  if(navigator.canShare&&navigator.canShare({files:[file]})) await navigator.share({files:[file],title:"QR Code"});
+  else alert("Sharing not supported. Download instead.");
 }
 
-// Safe local IP detection
-async function getLocalIP() {
-    return new Promise((resolve) => {
-        const rtc = new RTCPeerConnection({iceServers: []});
-        rtc.createDataChannel("");
-        rtc.createOffer().then(offer => rtc.setLocalDescription(offer)).catch(()=>{});
-        rtc.onicecandidate = (evt) => {
-            if (!evt || !evt.candidate) return;
-            const ipMatch = evt.candidate.candidate.match(/(\d{1,3}(\.\d{1,3}){3})/);
-            if (ipMatch) resolve(ipMatch[1]);
-        };
-        // Timeout if no candidate is found
-        setTimeout(() => resolve("Unavailable"), 2000);
-    });
+/* ── BARCODE ── */
+const barcodeInput = document.getElementById('barcodeInput');
+const barcodeSvg = document.getElementById('barcode');
+barcodeInput.addEventListener('input', ()=>{
+  if(!barcodeInput.value.trim()){ barcodeSvg.innerHTML=""; barcodeSvg.style.display="none"; return; }
+  barcodeSvg.style.display="block";
+  JsBarcode("#barcode", barcodeInput.value, { format:"CODE128", displayValue:true, width:2, height:60 });
+});
+function getSvgCanvas(cb){
+  const svg = document.getElementById('barcode');
+  if(!svg.innerHTML.trim()) return alert("No barcode generated!");
+  const svgData = new XMLSerializer().serializeToString(svg);
+  const canvas = document.createElement('canvas');
+  const ctx = canvas.getContext('2d');
+  const img = new Image();
+  const url = URL.createObjectURL(new Blob([svgData],{type:"image/svg+xml;charset=utf-8"}));
+  img.onload = ()=>{ canvas.width=img.width; canvas.height=img.height; ctx.drawImage(img,0,0); URL.revokeObjectURL(url); cb(canvas); };
+  img.src = url;
+}
+function copyBarcode(){ getSvgCanvas(c=>c.toBlob(b=>navigator.clipboard.write([new ClipboardItem({"image/png":b})]).then(()=>alert("Copied!")))); }
+function downloadBarcode(){ getSvgCanvas(c=>{ const a=document.createElement('a'); a.href=c.toDataURL("image/png"); a.download="barcode.png"; a.click(); }); }
+async function shareBarcode(){
+  getSvgCanvas(async c=>{
+    const blob = await new Promise(r=>c.toBlob(r,"image/png"));
+    const file = new File([blob],"barcode.png",{type:"image/png"});
+    if(navigator.canShare&&navigator.canShare({files:[file]})) await navigator.share({files:[file],title:"Barcode"});
+    else alert("Sharing not supported. Download instead.");
+  });
 }
 
-async function showSystemInfo() {
-    const outputEl = document.getElementById('sysInfoOutput');
-    outputEl.textContent = "Gathering system info...";
-
-    const cpu = navigator.hardwareConcurrency || "Unknown";
-    const ram = navigator.deviceMemory || "Unknown";
-    const platform = navigator.platform || "Unknown";
-    const ua = navigator.userAgent;
-    const screenRes = `${window.screen.width}x${window.screen.height}`;
-    const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone || "Unknown";
-
-    // Browser parsing
-    let browserName = "Unknown", browserVersion = "Unknown";
-    const uaMatch = ua.match(/(firefox|msie|trident|chrome|safari|edg|opr|opera)[\/\s]?([\d.]+)/i);
-    if (uaMatch) {
-        browserName = uaMatch[1];
-        browserVersion = uaMatch[2];
-        if (/trident/i.test(browserName)) browserName = "IE";
-        if (/edg/i.test(browserName)) browserName = "Edge";
-        if (/opr|opera/i.test(browserName)) browserName = "Opera";
-    }
-
-    // GPU info
-    let gpu = "Unavailable";
-    try {
-        const canvas = document.createElement('canvas');
-        const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
-        if (gl) {
-            const debugInfo = gl.getExtension('WEBGL_debug_renderer_info');
-            if (debugInfo) gpu = gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL);
-        }
-    } catch(e){}
-
-    // Battery info
-    let batteryInfo = "Unavailable";
-    if (navigator.getBattery) {
-        try {
-            const battery = await navigator.getBattery();
-            batteryInfo = `Level: ${Math.round(battery.level*100)}% | Charging: ${battery.charging}`;
-        } catch(e){}
-    }
-
-    // Public IP
-    let publicIP = "Unavailable";
-    try {
-        const res = await fetch('https://api.ipify.org?format=json');
-        const data = await res.json();
-        publicIP = data.ip;
-    } catch(e){}
-
-    // Local IP
-    let localIP = "Unavailable";
-    try {
-        localIP = await getLocalIP();
-    } catch(e){}
-
-    const info =
-`=== SYSTEM INFO ===
-Public IP: ${publicIP}
-Local IP: ${localIP}
-Platform (OS): ${platform}
-CPU Cores: ${cpu}
-RAM: ${ram} GB
-GPU: ${gpu}
-Screen Resolution: ${screenRes}
-Timezone: ${timezone}
-
-=== BROWSER INFO ===
-Browser: ${browserName}
-Version: ${browserVersion}
-User Agent: ${ua}
-
-=== BATTERY INFO ===
-${batteryInfo}`;
-
-    outputEl.textContent = info;
-}
-    
-
-  
-    
+/* ── HEX/DEC/BIN ── */
 function convertNumber(){
   let v = document.getElementById("numberInput").value.trim();
   if(!v) return;
-
-  let num = 0;
-
-  // detect input format
-  if(/^0x/.test(v)) num = parseInt(v,16);
-  else if(/^[01]+$/.test(v)) num = parseInt(v,2);
-  else num = parseInt(v,10);
-
+  let num = /^0x/i.test(v) ? parseInt(v,16) : /^[01]+$/.test(v) ? parseInt(v,2) : parseInt(v,10);
   document.getElementById("numberResult").textContent =
-`Decimal : ${num}
-Hex     : 0x${num.toString(16).toUpperCase()}
-Binary  : ${num.toString(2)}`;
+`Decimal : ${num}\nHex     : 0x${num.toString(16).toUpperCase()}\nBinary  : ${num.toString(2)}`;
 }
-    
-    function genPass(){
-  const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%";
-  let p = "";
-  for(let i=0;i<16;i++)
-    p += chars[Math.floor(Math.random() * chars.length)];
+document.getElementById('numberInput').addEventListener('keypress',e=>{ if(e.key==="Enter") convertNumber(); });
 
+/* ── PASSWORD GENERATOR ── */
+function genPass(){
+  const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*";
+  let p = Array.from({length:16},()=>chars[Math.floor(Math.random()*chars.length)]).join('');
   document.getElementById("passOut").textContent = p;
 }
-    
-    
-    
-    
-const barcodeInput = document.getElementById('barcodeInput');
-const barcodeSvg = document.getElementById('barcode');
 
-    // Hide barcode area on page load if empty
-if (!barcodeSvg.innerHTML.trim()) {
-  barcodeSvg.style.display = "none";
+/* ── MAC LOOKUP ── */
+function lookupMac(){
+  const mac = document.getElementById('macInput').value.trim();
+  if(!mac) return alert('Enter a MAC address');
+  fetch(`https://api.macvendors.com/${mac}`)
+    .then(r=>r.text())
+    .then(d=>document.getElementById('macOutput').textContent = d)
+    .catch(()=>document.getElementById('macOutput').textContent = 'Lookup failed');
 }
 
-    
-barcodeInput.addEventListener('input', () => {
-  if (barcodeInput.value.trim() === "") {
-    barcodeSvg.innerHTML = "";
-    barcodeSvg.style.display = "none";   // Hide barcode area when empty
-    return;
-  }
-
-  barcodeSvg.style.display = "block";    // Show barcode when generated
-  JsBarcode("#barcode", barcodeInput.value, {
-    format: "CODE128",
-    displayValue: true,
-    width: 2,
-    height: 50
+/* ── SYSTEM INFO ── */
+async function getLocalIP(){
+  return new Promise(resolve=>{
+    const rtc = new RTCPeerConnection({iceServers:[]});
+    rtc.createDataChannel("");
+    rtc.createOffer().then(o=>rtc.setLocalDescription(o)).catch(()=>{});
+    rtc.onicecandidate = evt=>{
+      if(!evt||!evt.candidate) return;
+      const m = evt.candidate.candidate.match(/(\d{1,3}(\.\d{1,3}){3})/);
+      if(m) resolve(m[1]);
+    };
+    setTimeout(()=>resolve("Unavailable"),2000);
   });
-});
+}
+async function showSystemInfo(){
+  const out = document.getElementById('sysInfoOutput');
+  out.textContent = "Gathering info...";
+  const cpu = navigator.hardwareConcurrency||"?";
+  const ram = navigator.deviceMemory||"?";
+  const platform = navigator.platform||"?";
+  const ua = navigator.userAgent;
+  const screen_ = `${window.screen.width}x${window.screen.height}`;
+  const tz = Intl.DateTimeFormat().resolvedOptions().timeZone||"?";
+  let gpu = "Unavailable";
+  try{
+    const gl = document.createElement('canvas').getContext('webgl');
+    const di = gl&&gl.getExtension('WEBGL_debug_renderer_info');
+    if(di) gpu = gl.getParameter(di.UNMASKED_RENDERER_WEBGL);
+  }catch(e){}
+  let battery = "Unavailable";
+  try{ const b=await navigator.getBattery(); battery=`${Math.round(b.level*100)}% | Charging: ${b.charging}`; }catch(e){}
+  let publicIP="Unavailable";
+  try{ publicIP=(await (await fetch('https://api.ipify.org?format=json')).json()).ip; }catch(e){}
+  let localIP="Unavailable";
+  try{ localIP=await getLocalIP(); }catch(e){}
+  out.textContent =
+`=== SYSTEM INFO ===
+Public IP:   ${publicIP}
+Local IP:    ${localIP}
+Platform:    ${platform}
+CPU Cores:   ${cpu}
+RAM:         ${ram} GB
+GPU:         ${gpu}
+Resolution:  ${screen_}
+Timezone:    ${tz}
 
-    
-    
-    
-    function downloadBarcode() {
-  const svg = document.getElementById('barcode');
-  if (!svg.innerHTML.trim()) return alert("No barcode generated!");
+=== BROWSER ===
+User Agent: ${ua}
 
-  const svgData = new XMLSerializer().serializeToString(svg);
-  const canvas = document.createElement('canvas');
-  const ctx = canvas.getContext('2d');
-
-  const img = new Image();
-  const svgBlob = new Blob([svgData], { type: "image/svg+xml;charset=utf-8" });
-  const url = URL.createObjectURL(svgBlob);
-
-  img.onload = function () {
-    canvas.width = img.width;
-    canvas.height = img.height;
-    ctx.drawImage(img, 0, 0);
-    URL.revokeObjectURL(url);
-
-    const pngFile = canvas.toDataURL("image/png");
-    const link = document.createElement('a');
-    link.href = pngFile;
-    link.download = "barcode.png";
-    link.click();
-  };
-  img.src = url;
+=== BATTERY ===
+${battery}`;
 }
 
-async function shareBarcode() {
-  const svg = document.getElementById('barcode');
-  if (!svg.innerHTML.trim()) return alert("No barcode generated!");
-
-  const svgData = new XMLSerializer().serializeToString(svg);
-  const canvas = document.createElement('canvas');
-  const ctx = canvas.getContext('2d');
-
-  const img = new Image();
-  const svgBlob = new Blob([svgData], { type: "image/svg+xml;charset=utf-8" });
-  const url = URL.createObjectURL(svgBlob);
-
-  img.onload = async function () {
-    canvas.width = img.width;
-    canvas.height = img.height;
-    ctx.drawImage(img, 0, 0);
-    URL.revokeObjectURL(url);
-
-    const blob = await new Promise(res => canvas.toBlob(res, "image/png"));
-    const file = new File([blob], "barcode.png", { type: "image/png" });
-
-    if (navigator.canShare && navigator.canShare({ files: [file] })) {
-      await navigator.share({ files: [file], title: "Barcode" });
-    } else {
-      alert("Sharing not supported. Download instead.");
-    }
-  };
-  img.src = url;
+/* ── PING ── */
+let monitorInterval;
+function startMonitoring(){
+  const url = document.getElementById('pingInput').value.trim();
+  const ms = parseInt(document.getElementById('pingInterval').value)*1000;
+  if(!url||isNaN(ms)||ms<1000){ alert("Enter valid target & interval (>=1s)"); return; }
+  stopMonitoring();
+  pingServer(url);
+  monitorInterval = setInterval(()=>pingServer(url), ms);
 }
-
-    
-    
-    
-    
-    
-    document.getElementById('numberInput').addEventListener('keypress', function(e){
-  if(e.key === "Enter") convertNumber();
-});
-
-    
- 
-    
-function showSystemStats() {
-  const output = document.getElementById('monitorSystemOutput');
-
-  // RAM in GB (approx)
-  const ram = navigator.deviceMemory || 'unknown';
-
-  // Number of CPU cores
-  const cores = navigator.hardwareConcurrency || 'unknown';
-
-  output.textContent = `RAM (approx): ${ram} GB\nCPU Cores: ${cores}`;
-}
-
-
-
-    
-    let monitorInterval;
-
-function startMonitoring() {
-  const pingTarget = document.getElementById('pingInput').value.trim();
-  const interval = parseInt(document.getElementById('pingInterval').value) * 1000;
-  
-  if (!pingTarget || isNaN(interval) || interval < 1000) {
-    alert("Enter valid ping target & interval (>=1s)");
-    return;
-  }
-
-  stopMonitoring(); // stop previous interval if any
-
-  // first run immediately
-  pingServer(pingTarget);
-
-  monitorInterval = setInterval(() => {
-    pingServer(pingTarget);
-  }, interval);
-}
-
-function stopMonitoring() {
-  clearInterval(monitorInterval);
-  monitorInterval = null;
-}
-
-async function pingServer(url) {
-  const output = document.getElementById('pingOutput');
-  
-  try {
-    const start = performance.now();
-    const response = await fetch(url, { method: 'GET' });
-    const end = performance.now();
-    const latency = (end - start).toFixed(2);
-    output.textContent = `Ping to ${url}: ${latency} ms (status: ${response.status})\n` + output.textContent;
-  } catch (e) {
-    output.textContent = `Ping to ${url}: failed\n` + output.textContent;
+function stopMonitoring(){ clearInterval(monitorInterval); monitorInterval=null; }
+async function pingServer(url){
+  const out = document.getElementById('pingOutput');
+  try{
+    const t0 = performance.now();
+    const r = await fetch(url,{method:'GET'});
+    const ms = (performance.now()-t0).toFixed(1);
+    out.textContent = `[${new Date().toLocaleTimeString()}] ${url} → ${ms}ms (${r.status})\n`+out.textContent;
+  }catch(e){
+    out.textContent = `[${new Date().toLocaleTimeString()}] ${url} → FAILED\n`+out.textContent;
   }
 }
 
-    // ========== GDRIVE-QR ==========
+/* ── NETWORK TOOLS ── */
+function getIpInfo(){
+  const input = document.getElementById('networkInput').value.trim();
+  const out = document.getElementById('networkOutput');
+  if(!input) return alert('Enter IP or domain');
+  const url = /\d+\.\d+\.\d+\.\d+/.test(input)?`https://ipapi.co/${input}/json/`:"https://ipapi.co/json/";
+  out.textContent = 'Fetching...';
+  fetch(url).then(r=>r.json()).then(d=>out.textContent=JSON.stringify(d,null,2)).catch(()=>out.textContent='Failed');
+}
+function urlToIp(){
+  const input = document.getElementById('networkInput').value.trim();
+  const out = document.getElementById('networkOutput');
+  if(!input) return alert('Enter a URL');
+  out.textContent='Resolving...';
+  fetch(`https://dns.google/resolve?name=${input}`).then(r=>r.json()).then(d=>{
+    const ip = d.Answer?d.Answer.map(a=>a.data).join(', '):'No IP found';
+    out.textContent=`IP for ${input}: ${ip}`;
+  }).catch(()=>out.textContent='Failed');
+}
+function dnsLookup(){
+  const input = document.getElementById('networkInput').value.trim();
+  const out = document.getElementById('networkOutput');
+  if(!input) return alert('Enter a domain');
+  out.textContent='Looking up DNS...';
+  fetch(`https://dns.google/resolve?name=${input}`).then(r=>r.json()).then(d=>out.textContent=JSON.stringify(d,null,2)).catch(()=>out.textContent='DNS lookup failed');
+}
+async function checkHosting(){
+  const domain = document.getElementById('networkInput').value.trim();
+  const out = document.getElementById('networkOutput');
+  if(!domain) return alert('Enter a domain');
+  out.textContent='Checking...';
+  try{
+    const dns = await (await fetch(`https://dns.google/resolve?name=${domain}`)).json();
+    if(!dns.Answer){ out.textContent='Could not resolve domain'; return; }
+    const ip = dns.Answer.find(a=>a.type===1)?.data;
+    if(!ip){ out.textContent='No IPv4 found'; return; }
+    const info = await (await fetch(`https://ipwhois.app/json/${ip}`)).json();
+    out.textContent=`Domain:  ${domain}\nIP:      ${ip}\nISP:     ${info.isp||'?'}\nOrg:     ${info.org||'?'}\nCountry: ${info.country||'?'}\nRegion:  ${info.region||'?'}\nCity:    ${info.city||'?'}`;
+  }catch(e){ out.textContent='Error fetching hosting info'; }
+}
+async function shortenURL(){
+  const input = document.getElementById('networkInput').value.trim();
+  const out = document.getElementById('networkOutput');
+  if(!input) return alert("Enter a URL to shorten");
+  out.textContent="Shortening...";
+  try{
+    const short = await (await fetch(`https://tinyurl.com/api-create.php?url=${encodeURIComponent(input)}`)).text();
+    out.textContent=`Shortened URL:\n${short}`;
+  }catch(e){ out.textContent="Failed to shorten URL"; }
+}
 
-    
- 
-    
-    let uploadedFileName = ""; // stores the name of the uploaded file
-
-
-// ========== CONFIG ==========
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwuumk20HhmH8o2SJsp8n_KgYPYu-3OuOk9JvmEzoSk66yyICYqB39jFCM10_uBUDMb/exec";  // <-- Replace
-
+/* ── GOOGLE DRIVE UPLOAD + QR ── */
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwuumk20HhmH8o2SJsp8n_KgYPYu-3OuOk9JvmEzoSk66yyICYqB39jFCM10_uBUDMb/exec";
 let selectedFile = null;
-
-// ========== ELEMENTS ==========
+let uploadedFileName = "";
 const dropArea = document.getElementById("dropArea");
 const fileInput = document.getElementById("fileInput");
-const statusBox = document.getElementById("uploadStatus");
-const qrSection = document.getElementById("qrSection");
-const qrOutput = document.getElementById("qrOutput");
-
-
-// ===== DRAG & DROP EVENTS =====
-dropArea.addEventListener("click", () => fileInput.click());
-
-dropArea.addEventListener("dragover", e => {
-  e.preventDefault();
-  dropArea.style.borderColor = "#008000";
-});
-
-dropArea.addEventListener("dragleave", e => {
-  e.preventDefault();
-  dropArea.style.borderColor = "#666";
-});
-
-dropArea.addEventListener("drop", e => {
-  e.preventDefault();
-  dropArea.style.borderColor = "#666";
-  selectedFile = e.dataTransfer.files[0];
-  statusBox.textContent = "File selected: " + selectedFile.name;
-});
-
-fileInput.addEventListener("change", () => {
-  selectedFile = fileInput.files[0];
-  statusBox.textContent = "File selected: " + selectedFile.name;
-});
-
-
-// ========== UPLOAD FUNCTION ==========
-    
-    function startUpload(makeQR = false) {
-  if (!selectedFile) {
-    alert("Please select a file first.");
-    return;
-  }
-
-  uploadedFileName = selectedFile.name; // store file name
-
-  qrSection.style.display = "none"; // hide previous QR
-  qrOutput.innerHTML = "";
-  statusBox.textContent = "Uploading... Please wait.";
-
-  let reader = new FileReader();
-  reader.onload = function(e) {
-    const base64Data = e.target.result.split(",")[1];
-
-    fetch(SCRIPT_URL, {
-      method: "POST",
-      body: new URLSearchParams({
-        name: selectedFile.name,
-        mimeType: selectedFile.type,
-        file: base64Data
-      })
-    })
-    .then(res => res.text())
-    .then(link => {
-      statusBox.textContent = "Uploaded Successfully:\n" + link;
-
-      if (makeQR) {
-        generateQR(link);
-      }
-    })
-    .catch(err => {
-      statusBox.textContent = "Upload failed: " + err;
-    });
+dropArea.addEventListener("click", ()=>fileInput.click());
+dropArea.addEventListener("dragover", e=>{ e.preventDefault(); dropArea.style.borderColor="#007BFF"; });
+dropArea.addEventListener("dragleave", ()=>{ dropArea.style.borderColor="#666"; });
+dropArea.addEventListener("drop", e=>{ e.preventDefault(); dropArea.style.borderColor="#666"; selectedFile=e.dataTransfer.files[0]; document.getElementById("uploadStatus").textContent="Selected: "+selectedFile.name; });
+fileInput.addEventListener("change", ()=>{ selectedFile=fileInput.files[0]; document.getElementById("uploadStatus").textContent="Selected: "+selectedFile.name; });
+function startUpload(makeQR=false){
+  if(!selectedFile){ alert("Select a file first."); return; }
+  uploadedFileName = selectedFile.name;
+  document.getElementById("qrSection").style.display="none";
+  document.getElementById("qrOutput").innerHTML="";
+  document.getElementById("uploadStatus").textContent="Uploading...";
+  const reader = new FileReader();
+  reader.onload = e=>{
+    fetch(SCRIPT_URL,{method:"POST",body:new URLSearchParams({name:selectedFile.name,mimeType:selectedFile.type,file:e.target.result.split(",")[1]})})
+    .then(r=>r.text())
+    .then(link=>{ document.getElementById("uploadStatus").textContent="Uploaded:\n"+link; if(makeQR) generateQR(link); })
+    .catch(err=>document.getElementById("uploadStatus").textContent="Upload failed: "+err);
   };
-
   reader.readAsDataURL(selectedFile);
 }
-
-
-
-
-// ========== GENERATE QR CODE ==========
-function generateQR(url) {
-  qrSection.style.display = "block";
-  qrOutput.innerHTML = "";
-
-  new QRCode(qrOutput, {
-    text: url,
-    width: 200,
-    height: 200
-  });
+function generateQR(url){
+  document.getElementById("qrSection").style.display="block";
+  document.getElementById("qrOutput").innerHTML="";
+  new QRCode(document.getElementById("qrOutput"),{text:url,width:200,height:200});
+}
+function copyQR(){
+  const img = document.querySelector("#qrOutput img");
+  if(!img) return alert("No QR to copy!");
+  fetch(img.src).then(r=>r.blob()).then(b=>navigator.clipboard.write([new ClipboardItem({"image/png":b})])).then(()=>alert("Copied!")).catch(()=>alert("Copy failed"));
+}
+function downloadQR(){
+  const img = document.querySelector("#qrOutput img");
+  if(!img) return alert("No QR to download!");
+  const a=document.createElement('a'); a.href=img.src; a.download=(uploadedFileName.replace(/\.[^/.]+$/,"")||"qr")+"_QR.png"; a.click();
+}
+async function shareQR(){
+  const img = document.querySelector("#qrOutput img");
+  if(!img) return alert("No QR to share!");
+  const blob=await fetch(img.src).then(r=>r.blob());
+  const file=new File([blob],"QR_Code.png",{type:blob.type});
+  if(navigator.canShare&&navigator.canShare({files:[file]})) await navigator.share({files:[file],title:"QR Code"});
+  else alert("Sharing not supported. Download instead.");
 }
 
-
-// ========== COPY QR ==========
-function copyQR() {
-  const img = qrOutput.querySelector("img");
-  if (!img) return alert("No QR to copy!");
-
-  fetch(img.src)
-    .then(r => r.blob())
-    .then(blob =>
-      navigator.clipboard.write([
-        new ClipboardItem({ "image/png": blob })
-      ])
-    )
-    .then(() => alert("QR copied!"))
-    .catch(() => alert("Copy failed!"));
-}
-
-
-// ========== DOWNLOAD QR ==========
-function downloadQR() {
-  const img = qrOutput.querySelector("img");
-  if (!img) return alert("No QR to download!");
-
-  const link = document.createElement("a");
-  link.href = img.src;
-
-  // Use uploaded file name for QR download
-  const fileNameWithoutExt = uploadedFileName ? uploadedFileName.replace(/\.[^/.]+$/, "") : "qr_code";
-  link.download = `${fileNameWithoutExt}_QR.png`;
-
-  link.click();
-}
-
-    
-async function shareQR() {
-  const img = qrOutput.querySelector("img");
-  if (!img) return alert("No QR code to share!");
-
-  try {
-    // Fetch the image as blob
-    const blob = await fetch(img.src).then(res => res.blob());
-
-    // Create a File object for sharing
-    const file = new File([blob], "QR_Code.png", { type: blob.type });
-
-    if (navigator.canShare && navigator.canShare({ files: [file] })) {
-      await navigator.share({
-        files: [file],
-        title: "QR Code",
-        text: "Here’s a QR code for your file!"
-      });
-    } else {
-      alert("Sharing not supported on this device. You can copy or download the QR instead.");
-    }
-  } catch (err) {
-    alert("Failed to share QR code: " + err);
-  }
-}
-
-    
-    
-
-// ========== THEME ==========
-    
-    
-function toggleTheme() {
-  const body = document.body;
-  body.classList.toggle("dark");
-
-  const themeToggle = document.getElementById("themeToggle");
-  const isDark = body.classList.contains("dark");
-
-  // Correct surrogate pair for moon
-  themeToggle.textContent = isDark ? "\u2600\uFE0F" : "\uD83C\uDF19";
-  localStorage.setItem("theme", isDark ? "dark" : "light");
-}
-
-window.addEventListener("load", () => {
-  const saved = localStorage.getItem("theme");
-  const body = document.body;
-  const themeToggle = document.getElementById("themeToggle");
-
-  if (saved === "dark") {
-    body.classList.add("dark");
-    themeToggle.textContent = "\u2600\uFE0F"; // sun
-  } else {
-    themeToggle.textContent = "\uD83C\uDF19"; // moon
-  }
-});
-
-
-    
-    
-    
-    
-    
-/* --------------------------
-   Network & Hosting Functions
----------------------------*/
-
-// Fetch general IP info
-function getIpInfo() {
-  const input = document.getElementById('networkInput').value.trim();
-  const output = document.getElementById('networkOutput');
-  if (!input) return alert('Enter IP or domain');
-
-  const url = input.match(/\d+\.\d+\.\d+\.\d+/) 
-              ? `https://ipapi.co/${input}/json/` 
-              : "https://ipapi.co/json/";
-
-  output.textContent = 'Fetching IP info...';
-  fetch(url)
-    .then(res => res.json())
-    .then(data => {
-      output.textContent = JSON.stringify(data, null, 2);
-    })
-    .catch(() => output.textContent = 'Failed to fetch IP info');
-}
-
-// URL → IP
-function urlToIp() {
-  const input = document.getElementById('networkInput').value.trim();
-  const output = document.getElementById('networkOutput');
-  if (!input) return alert('Enter a URL');
-
-  output.textContent = 'Resolving URL...';
-  fetch(`https://dns.google/resolve?name=${input}`)
-    .then(res => res.json())
-    .then(data => {
-      const ip = data.Answer ? data.Answer.map(a => a.data).join(', ') : 'No IP found';
-      output.textContent = `IP for ${input}: ${ip}`;
-    })
-    .catch(() => output.textContent = 'Failed to resolve URL');
-}
-
-// DNS Lookup
-function dnsLookup() {
-  const input = document.getElementById('networkInput').value.trim();
-  const output = document.getElementById('networkOutput');
-  if (!input) return alert('Enter a domain');
-
-  output.textContent = 'Looking up DNS...';
-  fetch(`https://dns.google/resolve?name=${input}`)
-    .then(res => res.json())
-    .then(data => {
-      output.textContent = JSON.stringify(data, null, 2);
-    })
-    .catch(() => output.textContent = 'DNS lookup failed');
-}
-
-// Hosting checker
-async function checkHosting() {
-  const domain = document.getElementById('networkInput').value.trim();
-  const output = document.getElementById('networkOutput');
-  if (!domain) return alert('Enter a domain');
-
-  output.textContent = 'Checking hosting...';
-  try {
-    const dnsRes = await fetch(`https://dns.google/resolve?name=${domain}`);
-    const dnsData = await dnsRes.json();
-
-    if (!dnsData.Answer) {
-      output.textContent = 'Could not resolve domain';
-      return;
-    }
-
-    const ip = dnsData.Answer.find(a => a.type === 1)?.data;
-    if (!ip) {
-      output.textContent = 'No IPv4 address found';
-      return;
-    }
-
-    const ipInfoRes = await fetch(`https://ipwhois.app/json/${ip}`);
-    const ipInfo = await ipInfoRes.json();
-
-    output.textContent = `
-Domain: ${domain}
-IP: ${ip}
-Hosting/ISP: ${ipInfo.org || 'Unknown'}
-Country: ${ipInfo.country || 'Unknown'}
-Region: ${ipInfo.region || 'Unknown'}
-City: ${ipInfo.city || 'Unknown'}
-ISP: ${ipInfo.isp || 'Unknown'}
-    `.trim();
-  } catch (err) {
-    output.textContent = 'Error fetching hosting info';
-    console.error(err);
-  }
-}
-
-// Copy function for output
-function copyOutput(id) {
-  const text = document.getElementById(id).textContent;
-  navigator.clipboard.writeText(text).then(() => alert('Copied to clipboard!'));
-}
-    
-    
-    
-
-
-// URL SHORTENER (TinyURL)
-async function shortenURL() {
-  const input = document.getElementById('networkInput').value.trim();
-  const output = document.getElementById('networkOutput');
-
-  if (!input) return alert("Enter a URL to shorten");
-
-  output.textContent = "Shortening URL...";
-
-  try {
-    const res = await fetch(
-      `https://tinyurl.com/api-create.php?url=${encodeURIComponent(input)}`
-    );
-
-    const shortUrl = await res.text();
-
-    output.textContent = `:\n${shortUrl}`;
-  } 
-  catch (err) {
-    output.textContent = "Failed to shorten URL";
-  }
-}
-
-
-    
-</script>
-    
-    
-    
-    
-    
-    
-  
-
-<script src="https://cdn.jsdelivr.net/npm/pdf-lib/dist/pdf-lib.min.js"></script>
-<script>
-async function mergePDFs() {
+/* ── PDF TOOLS ── */
+async function mergePDFs(){
   const files = document.getElementById('mergeFiles').files;
-  if(files.length < 2) { alert("Select at least 2 PDFs to merge"); return; }
-
-  const mergedPdf = await PDFLib.PDFDocument.create();
-
-  for (const f of files) {
-    const bytes = await f.arrayBuffer();
-    const pdf = await PDFLib.PDFDocument.load(bytes);
-    const copiedPages = await mergedPdf.copyPages(pdf, pdf.getPageIndices());
-    copiedPages.forEach(p => mergedPdf.addPage(p));
+  if(files.length<2){ alert("Select at least 2 PDFs"); return; }
+  const merged = await PDFLib.PDFDocument.create();
+  for(const f of files){
+    const pdf = await PDFLib.PDFDocument.load(await f.arrayBuffer());
+    const pages = await merged.copyPages(pdf,pdf.getPageIndices());
+    pages.forEach(p=>merged.addPage(p));
   }
-
-  const mergedBytes = await mergedPdf.save();
-  const blob = new Blob([mergedBytes], {type: "application/pdf"});
-  const url = URL.createObjectURL(blob);
-
-  document.getElementById('pdfOutput').textContent = "Merged PDF ready. Click below to download.";
-  const link = document.createElement('a');
-  link.href = url;
-  link.download = "merged.pdf";
-  link.textContent = "Download Merged PDF";
-  document.getElementById('pdfOutput').appendChild(document.createElement('br'));
-  document.getElementById('pdfOutput').appendChild(link);
+  const blob = new Blob([await merged.save()],{type:"application/pdf"});
+  const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download="merged.pdf"; a.textContent="Download Merged PDF";
+  const out=document.getElementById('pdfOutput'); out.textContent="Merged PDF ready: "; out.appendChild(a);
 }
-
-async function splitPDF() {
-  const file = document.getElementById('splitFile').files[0];
-  const pageNum = parseInt(document.getElementById('splitPage').value);
-  if(!file || isNaN(pageNum)) { alert("Select file and page number"); return; }
-
-  const bytes = await file.arrayBuffer();
-  const pdf = await PDFLib.PDFDocument.load(bytes);
-  const totalPages = pdf.getPageCount();
-
-  if(pageNum <= 0 || pageNum >= totalPages) { alert("Invalid page number"); return; }
-
-  // Part 1
-  const pdf1 = await PDFLib.PDFDocument.create();
-  const pages1 = await pdf1.copyPages(pdf, [...Array(pageNum).keys()]);
-  pages1.forEach(p => pdf1.addPage(p));
-  const blob1 = new Blob([await pdf1.save()], {type:"application/pdf"});
-  const url1 = URL.createObjectURL(blob1);
-
-  // Part 2
-  const pdf2 = await PDFLib.PDFDocument.create();
-  const pages2 = await pdf2.copyPages(pdf, [...Array(totalPages-pageNum).keys()].map(i=>i+pageNum));
-  pages2.forEach(p => pdf2.addPage(p));
-  const blob2 = new Blob([await pdf2.save()], {type:"application/pdf"});
-  const url2 = URL.createObjectURL(blob2);
-
-  document.getElementById('pdfOutput').textContent = "Split PDF ready. Download parts below:";
-  const a1 = document.createElement('a'); a1.href=url1; a1.download="part1.pdf"; a1.textContent="Download Part 1";
-  const a2 = document.createElement('a'); a2.href=url2; a2.download="part2.pdf"; a2.textContent="Download Part 2";
-  document.getElementById('pdfOutput').appendChild(document.createElement('br'));
-  document.getElementById('pdfOutput').appendChild(a1);
-  document.getElementById('pdfOutput').appendChild(document.createElement('br'));
-  document.getElementById('pdfOutput').appendChild(a2);
+async function splitPDF(){
+  const file=document.getElementById('splitFile').files[0];
+  const pageNum=parseInt(document.getElementById('splitPage').value);
+  if(!file||isNaN(pageNum)){ alert("Select file and page number"); return; }
+  const pdf=await PDFLib.PDFDocument.load(await file.arrayBuffer());
+  const total=pdf.getPageCount();
+  if(pageNum<=0||pageNum>=total){ alert("Invalid page number"); return; }
+  async function part(idxs){ const d=await PDFLib.PDFDocument.create(); (await d.copyPages(pdf,idxs)).forEach(p=>d.addPage(p)); return new Blob([await d.save()],{type:"application/pdf"}); }
+  const b1=await part([...Array(pageNum).keys()]);
+  const b2=await part([...Array(total-pageNum).keys()].map(i=>i+pageNum));
+  const out=document.getElementById('pdfOutput'); out.textContent="Split ready: ";
+  [["part1.pdf",b1],["part2.pdf",b2]].forEach(([name,blob])=>{ const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=name; a.textContent=name; a.style.marginRight="12px"; out.appendChild(a); });
 }
-    
 </script>
-
-   <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
 </body>
 </html>
