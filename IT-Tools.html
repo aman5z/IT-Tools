@@ -1,546 +1,904 @@
-<!DOCTYPE html> 
+<!DOCTYPE html>
 <html>
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>IT-Tools</title>
-  <style>
-  :root {
-    --bg: #f5f5f5;
-    --text: #000;
-    --box-bg: #fff;
-    --console-bg: #000;
-    --console-text: #0f0;
-    --border: #ccc;
-  }
-  body.dark {
-    --bg: #111;
-    --text: #eee;
-    --box-bg: #1b1b1b;
-    --console-bg: #000;
-    --console-text: #0f0;
-    --border: #444;
-  }
-  * { box-sizing: border-box; }
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: Arial, sans-serif;
-    margin: 0;
-    transition: background 0.3s, color 0.3s;
-  }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IT Tools</title>
+<style>
+:root {
+  --bg:#f0f4ff; --text:#1e1b4b; --box-bg:#fff; --border:#d1d5db;
+  --accent:#4f46e5; --accent2:#6366f1; --sub:#6b7280;
+  --console-bg:#0d1117; --console-text:#4ade80;
+  --star:#f59e0b; --ping-line:#4f46e5; --diff-add:#dcfce7;
+  --diff-add-text:#166534; --diff-rem:#fee2e2; --diff-rem-text:#991b1b;
+}
+body.dark {
+  --bg:#000; --text:#e2e8f0; --box-bg:#0f172a; --border:#1e293b;
+  --accent:#6366f1; --accent2:#818cf8; --sub:#94a3b8;
+  --ping-line:#818cf8; --diff-add:#14532d; --diff-add-text:#4ade80;
+  --diff-rem:#7f1d1d; --diff-rem-text:#fca5a5;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--text);font-family:Arial,sans-serif;transition:background .3s,color .3s;}
 
-  /* ── TOPBAR ── */
-  .topbar-sticky {
-    position: sticky;
-    top: 0;
-    z-index: 1000;
-    background: var(--bg);
-    border-bottom: 1px solid var(--border);
-    transition: background 0.3s;
-  }
-  .topbar {
-    max-width: 1100px;
-    margin: 0 auto;
-    padding: 10px 20px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-  .topbar h2 { margin: 0; font-size: 20px; }
+/* TOPBAR */
+.topbar-sticky{position:sticky;top:0;z-index:1000;background:var(--bg);border-bottom:1px solid var(--border);transition:background .3s;}
+.topbar{max-width:1100px;margin:0 auto;padding:10px 16px;display:flex;align-items:center;gap:10px;}
+.topbar h2{font-size:18px;white-space:nowrap;flex-shrink:0;}
+#searchBar{flex:1;padding:8px 12px;border-radius:20px;border:1px solid var(--border);background:var(--box-bg);color:var(--text);font-size:14px;}
+#searchBar:focus{outline:none;border-color:var(--accent);}
+#themeToggle{width:40px;height:40px;border-radius:50%;background:var(--box-bg);color:var(--text);border:1px solid var(--border);font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
 
-  #themeToggle {
-    width: 42px; height: 42px;
-    border-radius: 50%;
-    background: var(--box-bg);
-    color: var(--text);
-    display: flex; align-items: center; justify-content: center;
-    font-size: 20px;
-    cursor: pointer;
-    border: 1px solid var(--border);
-    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-    transition: background 0.3s;
-    font-family: "Segoe UI Emoji", "Apple Color Emoji", "Noto Color Emoji", sans-serif;
-    flex-shrink: 0;
-  }
+/* PAGE */
+.page-wrap{max-width:1100px;margin:0 auto;padding:16px;}
 
-  /* ── PAGE WRAP ── */
-  .page-wrap {
-    max-width: 1100px;
-    margin: 0 auto;
-    padding: 20px;
-  }
+/* FAVORITES SECTION */
+#favSection{display:none;margin-bottom:16px;}
+#favSection h3{font-size:14px;color:var(--sub);margin-bottom:8px;text-transform:uppercase;letter-spacing:1px;}
 
-  .tool-box {
-    background: var(--box-bg);
-    padding: 20px;
-    margin-bottom: 24px;
-    border-radius: 12px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.08);
-    border: 1px solid var(--border);
-    transition: background 0.3s;
-  }
-  .tool-box h3 { margin-top: 0; margin-bottom: 14px; }
+/* TOOL BOX */
+.tool-box{background:var(--box-bg);padding:20px;margin-bottom:16px;border-radius:12px;border:1px solid var(--border);transition:background .3s,border .3s;}
+.tool-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
+.tool-header h3{font-size:16px;}
+.star-btn{background:none;border:none;font-size:20px;cursor:pointer;padding:2px 6px;color:var(--sub);transition:color .2s;margin-top:0;}
+.star-btn.active{color:var(--star);}
+.star-btn:hover{background:none;}
 
-  pre {
-    background: var(--console-bg) !important;
-    color: var(--console-text) !important;
-    padding: 10px;
-    border-radius: 6px;
-    border: 1px solid #444;
-    white-space: pre-wrap;
-    overflow-x: auto;
-    font-size: 13px;
-  }
+/* INPUTS */
+input[type=text],input[type=number],input[type=password],textarea,select{
+  padding:9px 12px;margin:5px 0;width:100%;font-size:14px;border-radius:8px;
+  border:1px solid var(--border);background:var(--box-bg);color:var(--text);transition:border .2s;}
+input:focus,textarea:focus,select:focus{outline:none;border-color:var(--accent);}
+textarea{resize:vertical;min-height:80px;}
 
-  input, textarea {
-    padding: 9px;
-    margin: 5px 0;
-    width: 100%;
-    font-size: 14px;
-    border-radius: 6px;
-    border: 1px solid var(--border);
-    background: var(--box-bg);
-    color: var(--text);
-    box-sizing: border-box;
-    transition: border 0.2s;
-  }
-  input:focus, textarea:focus { outline: none; border-color: #007BFF; }
+/* BUTTONS */
+button{cursor:pointer;background:var(--accent);color:#fff;border:none;padding:9px 16px;border-radius:8px;font-size:14px;transition:background .2s,transform .1s;margin-top:6px;}
+button:hover{background:var(--accent2);}
+button:active{transform:scale(.97);}
+.btn-green{background:#16a34a;} .btn-green:hover{background:#15803d;}
+.btn-red{background:#dc2626;} .btn-red:hover{background:#b91c1c;}
+.btn-orange{background:#ea580c;} .btn-orange:hover{background:#c2410c;}
+.btn-gray{background:#6b7280;} .btn-gray:hover{background:#4b5563;}
 
-  button {
-    cursor: pointer;
-    background: #007BFF;
-    color: #fff;
-    border: none;
-    padding: 9px 14px;
-    border-radius: 6px;
-    font-size: 14px;
-    transition: background 0.2s, transform 0.1s;
-    margin-top: 6px;
-  }
-  button:hover { background: #0056b3; }
-  button:active { transform: scale(0.97); }
+.button-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px;}
+.button-row button{flex:1;min-width:90px;}
 
-  .output-wrapper {
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-    margin-top: 8px;
-  }
+/* OUTPUT */
+.output-wrapper{display:flex;flex-direction:column;gap:6px;margin-top:10px;}
+pre{background:var(--console-bg)!important;color:var(--console-text)!important;padding:12px;border-radius:8px;border:1px solid #333;white-space:pre-wrap;overflow-x:auto;font-size:13px;font-family:monospace;}
 
-  .button-row {
-    display: flex;
-    flex-direction: row;
-    gap: 8px;
-    flex-wrap: wrap;
-    margin-top: 8px;
-  }
-  .button-row button {
-    flex: 1;
-    min-width: 100px;
-    white-space: nowrap;
-  }
+/* DROPZONE */
+.drop-zone{border:2px dashed var(--border);padding:24px;text-align:center;border-radius:10px;cursor:pointer;transition:border .2s;color:var(--sub);}
+.drop-zone:hover{border-color:var(--accent);}
 
-  footer {
-    text-align: center;
-    padding: 16px;
-    color: #888;
-    margin-top: 30px;
-    border-top: 1px solid var(--border);
-    font-size: 13px;
-  }
+/* PING CHART */
+#pingChart{width:100%;height:140px;border-radius:8px;background:var(--console-bg);margin-top:10px;display:block;}
 
-  /* Drop zone */
-  #dropArea {
-    border: 2px dashed #666;
-    padding: 25px;
-    text-align: center;
-    border-radius: 10px;
-    background: var(--bg);
-    cursor: pointer;
-    transition: border-color 0.2s;
-  }
-  #dropArea:hover { border-color: #007BFF; }
+/* DIFF TOOL */
+.diff-output{font-family:monospace;font-size:13px;border-radius:8px;overflow:hidden;border:1px solid var(--border);margin-top:10px;}
+.diff-line{padding:3px 10px;white-space:pre-wrap;word-break:break-all;}
+.diff-add{background:var(--diff-add);color:var(--diff-add-text);}
+.diff-rem{background:var(--diff-rem);color:var(--diff-rem-text);}
+.diff-same{color:var(--sub);}
 
-  @media(max-width: 600px){
-    .page-wrap { padding: 10px; }
-    .button-row button { min-width: 70px; font-size: 12px; padding: 7px; }
-    .topbar h2 { font-size: 16px; }
-    .tool-box { padding: 14px; }
-  }
-  </style>
+/* HISTORY BADGE */
+.history-hint{font-size:11px;color:var(--sub);margin-top:4px;font-style:italic;}
+
+/* NO RESULTS */
+#noResults{display:none;text-align:center;color:var(--sub);padding:40px;font-size:16px;}
+
+/* QR COLOR ROW */
+.color-row{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-top:8px;}
+.color-row label{font-size:13px;color:var(--sub);}
+.color-row input[type=color]{width:44px;height:36px;padding:2px;border-radius:6px;cursor:pointer;}
+
+/* FAV PILL */
+.fav-pill{display:inline-flex;align-items:center;gap:6px;background:var(--box-bg);border:1px solid var(--border);border-radius:20px;padding:5px 12px;font-size:13px;cursor:pointer;transition:border .2s;}
+.fav-pill:hover{border-color:var(--accent);}
+
+@media(max-width:600px){
+  .topbar{flex-wrap:wrap;}
+  #searchBar{order:3;flex-basis:100%;}
+  .button-row button{min-width:70px;font-size:12px;padding:7px;}
+  .tool-box{padding:14px;}
+}
+</style>
 </head>
 <body>
 
-<!-- TOPBAR -->
 <div class="topbar-sticky">
   <div class="topbar">
     <h2>🛠️ IT Tools</h2>
+    <input type="text" id="searchBar" placeholder="🔍 Search tools..." oninput="filterTools()">
     <div id="themeToggle" onclick="toggleTheme()">🌙</div>
   </div>
 </div>
 
 <div class="page-wrap">
 
-<!-- FILE UPLOAD + QR -->
-<div class="tool-box">
-  <h3>📁 Upload File to Google Drive + Generate QR</h3>
-  <div id="dropArea">
-    Drag & drop files here OR click to select
-    <input type="file" id="fileInput" style="display:none;">
+<!-- FAVORITES -->
+<div id="favSection">
+  <h3>⭐ Favorites</h3>
+  <div id="favPills" style="display:flex;flex-wrap:wrap;gap:8px;"></div>
+</div>
+
+<div id="noResults">😕 No tools match your search.</div>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- FILE UPLOAD + QR                           -->
+<!-- ═══════════════════════════════════════════ -->
+<div class="tool-box" data-tool="upload drive qr google file">
+  <div class="tool-header">
+    <h3>📁 Upload to Google Drive + QR</h3>
+    <button class="star-btn" onclick="toggleFav(this,'Upload to Google Drive + QR')">☆</button>
   </div>
-  <div class="button-row" style="margin-top:10px;">
+  <div class="drop-zone" id="dropArea">
+    Drag & drop or click to select file
+    <input type="file" id="fileInput" style="display:none">
+  </div>
+  <div class="button-row">
     <button onclick="startUpload()">Upload</button>
-    <button onclick="startUpload(true)" style="background:#28a745;">Upload + Generate QR</button>
+    <button class="btn-green" onclick="startUpload(true)">Upload + QR</button>
   </div>
   <div class="output-wrapper">
     <pre id="uploadStatus">Waiting for file...</pre>
   </div>
-  <div id="qrSection" style="display:none;">
-    <h4>QR Code:</h4>
+  <div id="qrSection" style="display:none">
+    <h4 style="margin:10px 0 6px">QR Code:</h4>
     <div id="qrOutput"></div>
     <div class="button-row">
-      <button onclick="copyQR()">Copy QR</button>
-      <button onclick="downloadQR()">Download QR</button>
-      <button onclick="shareQR()">Share QR</button>
+      <button onclick="copyQR()">Copy</button>
+      <button onclick="downloadQR()">Download</button>
+      <button onclick="shareQR()">Share</button>
     </div>
   </div>
 </div>
 
-<!-- QR CODE GENERATOR -->
-<div class="tool-box">
-  <h3>📷 QR Code Generator</h3>
-  <input type="text" id="qrcodeInput" placeholder="Enter text or URL">
+<!-- ═══════════════════════════════════════════ -->
+<!-- QR CODE GENERATOR                          -->
+<!-- ═══════════════════════════════════════════ -->
+<div class="tool-box" data-tool="qr code generator barcode">
+  <div class="tool-header">
+    <h3>📷 QR Code Generator</h3>
+    <button class="star-btn" onclick="toggleFav(this,'QR Code Generator')">☆</button>
+  </div>
+  <input type="text" id="qrcodeInput" placeholder="Enter text or URL" oninput="genQR()">
+  <div class="color-row">
+    <label>Foreground:</label>
+    <input type="color" id="qrFg" value="#000000" onchange="genQR()">
+    <label>Background:</label>
+    <input type="color" id="qrBg" value="#ffffff" onchange="genQR()">
+  </div>
   <div id="qrcode" style="margin-top:10px;"></div>
   <div class="button-row">
-    <button onclick="copyQRCode()">Copy QR</button>
-    <button onclick="downloadQRCode()">Download QR</button>
-    <button onclick="shareQRCode()">Share QR</button>
+    <button onclick="copyQRCode()">Copy</button>
+    <button onclick="downloadQRCode()">Download</button>
+    <button onclick="shareQRCode()">Share</button>
   </div>
 </div>
 
-<!-- BARCODE GENERATOR -->
-<div class="tool-box">
-  <h3>🔲 Barcode Generator</h3>
-  <input type="text" id="barcodeInput" placeholder="Enter text or number">
-  <svg id="barcode" style="display:none;margin-top:10px;width:100%;"></svg>
+<!-- ═══════════════════════════════════════════ -->
+<!-- BARCODE GENERATOR                          -->
+<!-- ═══════════════════════════════════════════ -->
+<div class="tool-box" data-tool="barcode generator code128 scanner">
+  <div class="tool-header">
+    <h3>🔲 Barcode Generator</h3>
+    <button class="star-btn" onclick="toggleFav(this,'Barcode Generator')">☆</button>
+  </div>
+  <input type="text" id="barcodeInput" placeholder="Enter text or number" oninput="genBarcode()">
+  <svg id="barcode" style="display:none;width:100%;margin-top:10px;"></svg>
   <div class="button-row">
-    <button onclick="copyBarcode()">Copy Barcode</button>
-    <button onclick="downloadBarcode()">Download Barcode</button>
-    <button onclick="shareBarcode()">Share Barcode</button>
+    <button onclick="copyBarcode()">Copy</button>
+    <button onclick="downloadBarcode()">Download</button>
+    <button onclick="shareBarcode()">Share</button>
   </div>
 </div>
 
-<!-- PDF TOOLS -->
-<div class="tool-box">
-  <h3>📄 PDF Tools</h3>
-  <label>Merge PDFs:</label>
+<!-- ═══════════════════════════════════════════ -->
+<!-- PDF TOOLS                                  -->
+<!-- ═══════════════════════════════════════════ -->
+<div class="tool-box" data-tool="pdf merge split compress watermark rotate pages">
+  <div class="tool-header">
+    <h3>📄 PDF Tools</h3>
+    <button class="star-btn" onclick="toggleFav(this,'PDF Tools')">☆</button>
+  </div>
+
+  <label style="font-size:13px;font-weight:bold;margin-top:8px;display:block;">Merge PDFs:</label>
   <input type="file" id="mergeFiles" multiple accept=".pdf">
-  <button onclick="mergePDFs()">Merge PDFs</button>
-  <label style="margin-top:12px;display:block;">Split PDF:</label>
+  <button onclick="mergePDFs()">Merge</button>
+
+  <hr style="border-color:var(--border);margin:14px 0;">
+
+  <label style="font-size:13px;font-weight:bold;display:block;">Split PDF:</label>
   <input type="file" id="splitFile" accept=".pdf">
-  <input type="number" id="splitPage" placeholder="Page number to split at" style="width:180px;">
-  <button onclick="splitPDF()">Split PDF</button>
+  <input type="number" id="splitPage" placeholder="Split at page number" style="width:200px;">
+  <button onclick="splitPDF()">Split</button>
+
+  <hr style="border-color:var(--border);margin:14px 0;">
+
+  <label style="font-size:13px;font-weight:bold;display:block;">Compress PDF:</label>
+  <input type="file" id="compressFile" accept=".pdf">
+  <button onclick="compressPDF()">Compress</button>
+
+  <hr style="border-color:var(--border);margin:14px 0;">
+
+  <label style="font-size:13px;font-weight:bold;display:block;">Watermark PDF:</label>
+  <input type="file" id="watermarkFile" accept=".pdf">
+  <input type="text" id="watermarkText" placeholder="Watermark text (e.g. CONFIDENTIAL)">
+  <button onclick="watermarkPDF()">Add Watermark</button>
+
+  <hr style="border-color:var(--border);margin:14px 0;">
+
+  <label style="font-size:13px;font-weight:bold;display:block;">Rotate PDF Pages:</label>
+  <input type="file" id="rotateFile" accept=".pdf">
+  <select id="rotateDeg" style="width:auto;">
+    <option value="90">90° clockwise</option>
+    <option value="180">180°</option>
+    <option value="270">90° counter-clockwise</option>
+  </select>
+  <button onclick="rotatePDF()">Rotate All Pages</button>
+
   <div class="output-wrapper">
-    <pre id="pdfOutput"></pre>
-    <button onclick="copyOutput('pdfOutput')">Copy Logs</button>
+    <pre id="pdfOutput">PDF output will appear here...</pre>
+    <button class="btn-gray" onclick="copyOutput('pdfOutput')">Copy Logs</button>
   </div>
 </div>
 
-<!-- NETWORK TOOLS -->
-<div class="tool-box">
-  <h3>🌐 Network & Hosting Tools</h3>
-  <input type="text" id="networkInput" placeholder="Enter IP, URL, or domain">
+<!-- ═══════════════════════════════════════════ -->
+<!-- TEXT DIFF                                  -->
+<!-- ═══════════════════════════════════════════ -->
+<div class="tool-box" data-tool="diff text compare difference changes">
+  <div class="tool-header">
+    <h3>🔀 Text Diff Tool</h3>
+    <button class="star-btn" onclick="toggleFav(this,'Text Diff Tool')">☆</button>
+  </div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+    <div>
+      <label style="font-size:12px;color:var(--sub);">Original Text</label>
+      <textarea id="diffOriginal" placeholder="Paste original text here..." style="height:140px;"></textarea>
+    </div>
+    <div>
+      <label style="font-size:12px;color:var(--sub);">Modified Text</label>
+      <textarea id="diffModified" placeholder="Paste modified text here..." style="height:140px;"></textarea>
+    </div>
+  </div>
+  <div class="button-row">
+    <button onclick="runDiff()">Compare</button>
+    <button class="btn-gray" onclick="clearDiff()">Clear</button>
+  </div>
+  <div id="diffStats" style="font-size:13px;color:var(--sub);margin-top:8px;"></div>
+  <div class="diff-output" id="diffOutput" style="display:none;max-height:320px;overflow-y:auto;"></div>
+</div>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- NETWORK TOOLS                              -->
+<!-- ═══════════════════════════════════════════ -->
+<div class="tool-box" data-tool="network ip dns lookup hosting url shorten">
+  <div class="tool-header">
+    <h3>🌐 Network & Hosting Tools</h3>
+    <button class="star-btn" onclick="toggleFav(this,'Network & Hosting Tools')">☆</button>
+  </div>
+  <input type="text" id="networkInput" placeholder="Enter IP, URL, or domain" oninput="saveHistory('networkInput')">
+  <div class="history-hint" id="networkHint"></div>
   <div class="button-row">
     <button onclick="getIpInfo()">IP Info</button>
     <button onclick="urlToIp()">URL → IP</button>
     <button onclick="dnsLookup()">DNS Lookup</button>
-    <button onclick="checkHosting()">Check Hosting</button>
+    <button onclick="checkHosting()">Hosting</button>
     <button onclick="shortenURL()">Shorten URL</button>
   </div>
   <div class="output-wrapper">
     <pre id="networkOutput"></pre>
-    <button onclick="copyOutput('networkOutput')">Copy</button>
+    <button class="btn-gray" onclick="copyOutput('networkOutput')">Copy</button>
   </div>
 </div>
 
-<!-- SUBNET CALCULATOR -->
-<div class="tool-box">
-  <h3>🔢 Subnet Calculator</h3>
-  <input type="text" id="ip" placeholder="IP address (e.g. 192.168.1.10)">
-  <input type="text" id="cidr" placeholder="CIDR (e.g. 24)">
+<!-- ═══════════════════════════════════════════ -->
+<!-- SUBNET CALCULATOR                          -->
+<!-- ═══════════════════════════════════════════ -->
+<div class="tool-box" data-tool="subnet calculator ip cidr mask network">
+  <div class="tool-header">
+    <h3>🔢 Subnet Calculator</h3>
+    <button class="star-btn" onclick="toggleFav(this,'Subnet Calculator')">☆</button>
+  </div>
+  <input type="text" id="ip" placeholder="IP address (e.g. 192.168.1.10)" oninput="saveHistory('ip')">
+  <input type="text" id="cidr" placeholder="CIDR (e.g. 24)" oninput="saveHistory('cidr')">
+  <div class="history-hint" id="ipHint"></div>
   <button onclick="calculateSubnet()">Calculate</button>
   <div class="output-wrapper">
     <pre id="subnetOutput"></pre>
-    <button onclick="copyOutput('subnetOutput')">Copy</button>
+    <button class="btn-gray" onclick="copyOutput('subnetOutput')">Copy</button>
   </div>
 </div>
 
-<!-- PING -->
-<div class="tool-box">
-  <h3>📡 Ping / Monitor</h3>
-  <input type="text" id="pingInput" placeholder="e.g. https://api.github.com">
+<!-- ═══════════════════════════════════════════ -->
+<!-- PING / MONITOR                             -->
+<!-- ═══════════════════════════════════════════ -->
+<div class="tool-box" data-tool="ping monitor latency uptime check url">
+  <div class="tool-header">
+    <h3>📡 Ping / Monitor</h3>
+    <button class="star-btn" onclick="toggleFav(this,'Ping / Monitor')">☆</button>
+  </div>
+  <input type="text" id="pingInput" placeholder="e.g. https://api.github.com" oninput="saveHistory('pingInput')">
+  <div class="history-hint" id="pingHint"></div>
   <input type="number" id="pingInterval" value="5" placeholder="Interval (seconds)" style="width:160px;">
   <div class="button-row">
     <button onclick="startMonitoring()">Start</button>
-    <button onclick="stopMonitoring()" style="background:#ef4444;">Stop</button>
+    <button class="btn-red" onclick="stopMonitoring()">Stop</button>
+    <button class="btn-gray" onclick="clearPing()">Clear</button>
   </div>
+  <canvas id="pingChart"></canvas>
+  <div id="pingStats" style="font-size:12px;color:var(--sub);margin-top:4px;"></div>
   <div class="output-wrapper">
-    <pre id="pingOutput">Ping results will appear here...</pre>
+    <pre id="pingOutput" style="max-height:180px;overflow-y:auto;">Results will appear here...</pre>
   </div>
 </div>
 
-<!-- BASE64 -->
-<div class="tool-box">
-  <h3>🔐 Base64 Encode / Decode</h3>
-  <input type="text" id="b64input" placeholder="Enter text">
+<!-- ═══════════════════════════════════════════ -->
+<!-- BASE64                                     -->
+<!-- ═══════════════════════════════════════════ -->
+<div class="tool-box" data-tool="base64 encode decode text">
+  <div class="tool-header">
+    <h3>🔐 Base64 Encode / Decode</h3>
+    <button class="star-btn" onclick="toggleFav(this,'Base64 Encode / Decode')">☆</button>
+  </div>
+  <input type="text" id="b64input" placeholder="Enter text or Base64" oninput="saveHistory('b64input')">
+  <div class="history-hint" id="b64Hint"></div>
   <div class="button-row">
     <button onclick="encodeB64()">Encode</button>
     <button onclick="decodeB64()">Decode</button>
   </div>
   <div class="output-wrapper">
     <pre id="b64output"></pre>
-    <button onclick="copyOutput('b64output')">Copy</button>
+    <button class="btn-gray" onclick="copyOutput('b64output')">Copy</button>
   </div>
 </div>
 
-<!-- HEX/DEC/BIN -->
-<div class="tool-box">
-  <h3>🔄 Hex / Dec / Binary Converter</h3>
-  <input id="numberInput" placeholder="Enter decimal, hex (0x...) or binary">
+<!-- ═══════════════════════════════════════════ -->
+<!-- HEX / DEC / BIN                            -->
+<!-- ═══════════════════════════════════════════ -->
+<div class="tool-box" data-tool="hex decimal binary converter number">
+  <div class="tool-header">
+    <h3>🔄 Hex / Dec / Binary Converter</h3>
+    <button class="star-btn" onclick="toggleFav(this,'Hex / Dec / Binary Converter')">☆</button>
+  </div>
+  <input id="numberInput" placeholder="Enter decimal, 0xFF hex, or binary (e.g. 1010)" oninput="saveHistory('numberInput')">
+  <div class="history-hint" id="numHint"></div>
   <button onclick="convertNumber()">Convert</button>
   <div class="output-wrapper">
     <pre id="numberResult"></pre>
-    <button onclick="copyOutput('numberResult')">Copy</button>
+    <button class="btn-gray" onclick="copyOutput('numberResult')">Copy</button>
   </div>
 </div>
 
-<!-- PASSWORD GENERATOR -->
-<div class="tool-box">
-  <h3>🔑 Password Generator</h3>
-  <button onclick="genPass()">Generate Password</button>
+<!-- ═══════════════════════════════════════════ -->
+<!-- PASSWORD GENERATOR                         -->
+<!-- ═══════════════════════════════════════════ -->
+<div class="tool-box" data-tool="password generator strong random secure">
+  <div class="tool-header">
+    <h3>🔑 Password Generator</h3>
+    <button class="star-btn" onclick="toggleFav(this,'Password Generator')">☆</button>
+  </div>
+  <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:8px;">
+    <label style="font-size:13px;">Length:</label>
+    <input type="number" id="passLen" value="16" style="width:70px;">
+    <label><input type="checkbox" id="passUpper" checked> A-Z</label>
+    <label><input type="checkbox" id="passNum" checked> 0-9</label>
+    <label><input type="checkbox" id="passSym" checked> !@#$</label>
+  </div>
+  <button onclick="genPass()">Generate</button>
   <div class="output-wrapper">
     <pre id="passOut"></pre>
-    <button onclick="copyOutput('passOut')">Copy</button>
+    <div id="passStrength" style="font-size:13px;margin-top:4px;"></div>
+    <button class="btn-gray" onclick="copyOutput('passOut')">Copy</button>
   </div>
 </div>
 
-<!-- MAC LOOKUP -->
-<div class="tool-box">
-  <h3>🖧 MAC Vendor Lookup</h3>
-  <input type="text" id="macInput" placeholder="e.g. 00:1A:2B:3C:4D:5E">
+<!-- ═══════════════════════════════════════════ -->
+<!-- MAC LOOKUP                                 -->
+<!-- ═══════════════════════════════════════════ -->
+<div class="tool-box" data-tool="mac address vendor lookup network hardware">
+  <div class="tool-header">
+    <h3>🖧 MAC Vendor Lookup</h3>
+    <button class="star-btn" onclick="toggleFav(this,'MAC Vendor Lookup')">☆</button>
+  </div>
+  <input type="text" id="macInput" placeholder="e.g. 00:1A:2B:3C:4D:5E" oninput="saveHistory('macInput')">
+  <div class="history-hint" id="macHint"></div>
   <button onclick="lookupMac()">Lookup</button>
   <div class="output-wrapper">
     <pre id="macOutput"></pre>
-    <button onclick="copyOutput('macOutput')">Copy</button>
+    <button class="btn-gray" onclick="copyOutput('macOutput')">Copy</button>
   </div>
 </div>
 
-<!-- SYSTEM INFO -->
-<div class="tool-box">
-  <h3>💻 System Info Viewer</h3>
-  <button onclick="showSystemInfo()">View System Info</button>
+<!-- ═══════════════════════════════════════════ -->
+<!-- SYSTEM INFO                                -->
+<!-- ═══════════════════════════════════════════ -->
+<div class="tool-box" data-tool="system info browser cpu ram gpu battery ip screen">
+  <div class="tool-header">
+    <h3>💻 System Info Viewer</h3>
+    <button class="star-btn" onclick="toggleFav(this,'System Info Viewer')">☆</button>
+  </div>
+  <button onclick="showSystemInfo()">Scan System Info</button>
   <div class="output-wrapper">
-    <pre id="sysInfoOutput">Press the button to view system info...</pre>
-    <button onclick="copyOutput('sysInfoOutput')">Copy</button>
+    <pre id="sysInfoOutput">Press button to scan...</pre>
+    <div class="button-row">
+      <button class="btn-gray" onclick="copyOutput('sysInfoOutput')">Copy All</button>
+    </div>
   </div>
 </div>
 
-<footer>IT Tools — Built for internal use</footer>
+<footer style="text-align:center;padding:20px;color:var(--sub);font-size:13px;border-top:1px solid var(--border);margin-top:16px;">
+  IT Tools — All processing done in your browser
+</footer>
 
 </div><!-- end page-wrap -->
 
-<!-- SCRIPTS -->
-<script src="https://apis.google.com/js/api.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/pdf-lib/dist/pdf-lib.min.js"></script>
 
 <script>
-/* ── THEME ── */
+/* ═══════════════════════════════════════
+   THEME
+═══════════════════════════════════════ */
 function toggleTheme(){
   document.body.classList.toggle("dark");
-  const isDark = document.body.classList.contains("dark");
-  document.getElementById("themeToggle").textContent = isDark ? "☀️" : "🌙";
-  localStorage.setItem("theme", isDark ? "dark" : "light");
+  const d = document.body.classList.contains("dark");
+  document.getElementById("themeToggle").textContent = d?"☀️":"🌙";
+  localStorage.setItem("theme", d?"dark":"light");
 }
-window.addEventListener("load", ()=>{
-  const saved = localStorage.getItem("theme");
-  if(saved === "dark"){
+(()=>{
+  if(localStorage.getItem("theme")==="dark"){
     document.body.classList.add("dark");
-    document.getElementById("themeToggle").textContent = "☀️";
+    document.getElementById("themeToggle").textContent="☀️";
   }
-});
+})();
 
-/* ── COPY OUTPUT ── */
-function copyOutput(id){
-  const text = document.getElementById(id).textContent;
-  if(!text.trim()) return alert("Nothing to copy!");
-  navigator.clipboard.writeText(text).then(()=>alert("Copied!")).catch(()=>alert("Copy failed"));
+/* ═══════════════════════════════════════
+   SEARCH / FILTER
+═══════════════════════════════════════ */
+function filterTools(){
+  const q = document.getElementById("searchBar").value.toLowerCase().trim();
+  const boxes = document.querySelectorAll(".tool-box");
+  let visible = 0;
+  boxes.forEach(b=>{
+    const tags = (b.getAttribute("data-tool")||"").toLowerCase();
+    const title = b.querySelector("h3")?.textContent.toLowerCase()||"";
+    const show = !q || tags.includes(q) || title.includes(q);
+    b.style.display = show ? "" : "none";
+    if(show) visible++;
+  });
+  document.getElementById("noResults").style.display = visible===0?"block":"none";
 }
 
-/* ── SUBNET CALCULATOR ── */
+/* ═══════════════════════════════════════
+   FAVORITES
+═══════════════════════════════════════ */
+let favs = JSON.parse(localStorage.getItem("ittools_favs")||"[]");
+
+function toggleFav(btn, name){
+  const idx = favs.indexOf(name);
+  if(idx>=0){ favs.splice(idx,1); btn.textContent="☆"; btn.classList.remove("active"); }
+  else{ favs.push(name); btn.textContent="⭐"; btn.classList.add("active"); }
+  localStorage.setItem("ittools_favs", JSON.stringify(favs));
+  renderFavs();
+}
+
+function renderFavs(){
+  const sec = document.getElementById("favSection");
+  const pills = document.getElementById("favPills");
+  pills.innerHTML="";
+  if(favs.length===0){ sec.style.display="none"; return; }
+  sec.style.display="block";
+  favs.forEach(name=>{
+    const p = document.createElement("div");
+    p.className="fav-pill";
+    p.textContent="⭐ "+name;
+    p.onclick=()=>{
+      const all = document.querySelectorAll(".tool-box");
+      all.forEach(b=>{ if(b.querySelector("h3")?.textContent.includes(name.substring(0,10))){ b.scrollIntoView({behavior:"smooth",block:"start"}); }});
+    };
+    pills.appendChild(p);
+  });
+}
+
+// Init star buttons from saved favs
+(()=>{
+  document.querySelectorAll(".star-btn").forEach(btn=>{
+    const name = btn.getAttribute("onclick").match(/'([^']+)'\)/)?.[1];
+    if(name && favs.includes(name)){ btn.textContent="⭐"; btn.classList.add("active"); }
+  });
+  renderFavs();
+})();
+
+/* ═══════════════════════════════════════
+   USAGE HISTORY
+═══════════════════════════════════════ */
+function saveHistory(id){
+  const val = document.getElementById(id)?.value||"";
+  if(val.trim()) localStorage.setItem("hist_"+id, val);
+}
+
+function loadHistory(){
+  const fields = ['networkInput','ip','cidr','pingInput','b64input','numberInput','macInput'];
+  fields.forEach(id=>{
+    const saved = localStorage.getItem("hist_"+id);
+    const el = document.getElementById(id);
+    const hint = document.getElementById(id.replace("Input","")+"Hint") || document.getElementById(id+"Hint");
+    if(saved && el){
+      if(hint) hint.textContent = "Last used: "+saved.substring(0,60);
+    }
+  });
+}
+loadHistory();
+
+/* ═══════════════════════════════════════
+   COPY OUTPUT
+═══════════════════════════════════════ */
+function copyOutput(id){
+  const t = document.getElementById(id).textContent;
+  if(!t.trim()) return alert("Nothing to copy!");
+  navigator.clipboard.writeText(t).then(()=>alert("Copied!")).catch(()=>alert("Copy failed"));
+}
+
+/* ═══════════════════════════════════════
+   SUBNET CALCULATOR
+═══════════════════════════════════════ */
 function calculateSubnet(){
-  let ip = document.getElementById('ip').value.trim();
-  let cidr = parseInt(document.getElementById('cidr').value.trim());
-  if(!ip || isNaN(cidr) || cidr<0 || cidr>32){ alert("Invalid IP or CIDR"); return; }
-  let oct = ip.split('.').map(Number);
-  if(oct.length!==4 || oct.some(o=>o<0||o>255)){ alert("Invalid IP format"); return; }
-  let ipInt = ((oct[0]<<24)>>>0)+(oct[1]<<16)+(oct[2]<<8)+oct[3];
-  let maskInt = cidr===0?0:(~0<<(32-cidr))>>>0;
-  let mask = [(maskInt>>>24)&255,(maskInt>>>16)&255,(maskInt>>>8)&255,maskInt&255].join('.');
-  let networkInt = ipInt & maskInt;
-  let network = [(networkInt>>>24)&255,(networkInt>>>16)&255,(networkInt>>>8)&255,networkInt&255].join('.');
-  let bcInt = networkInt|(~maskInt>>>0);
-  let broadcast = [(bcInt>>>24)&255,(bcInt>>>16)&255,(bcInt>>>8)&255,bcInt&255].join('.');
-  let hosts = cidr>=31?0:Math.pow(2,32-cidr)-2;
-  document.getElementById('subnetOutput').textContent =
+  let ip=document.getElementById('ip').value.trim(), cidr=parseInt(document.getElementById('cidr').value.trim());
+  if(!ip||isNaN(cidr)||cidr<0||cidr>32){alert("Invalid IP or CIDR");return;}
+  let oct=ip.split('.').map(Number);
+  if(oct.length!==4||oct.some(o=>o<0||o>255)){alert("Invalid IP");return;}
+  let ipInt=((oct[0]<<24)>>>0)+(oct[1]<<16)+(oct[2]<<8)+oct[3];
+  let maskInt=cidr===0?0:(~0<<(32-cidr))>>>0;
+  let mask=[(maskInt>>>24)&255,(maskInt>>>16)&255,(maskInt>>>8)&255,maskInt&255].join('.');
+  let netInt=ipInt&maskInt, net=[(netInt>>>24)&255,(netInt>>>16)&255,(netInt>>>8)&255,netInt&255].join('.');
+  let bcInt=netInt|(~maskInt>>>0), bc=[(bcInt>>>24)&255,(bcInt>>>16)&255,(bcInt>>>8)&255,bcInt&255].join('.');
+  let hosts=cidr>=31?0:Math.pow(2,32-cidr)-2;
+  let firstHost=cidr>=31?net:[(netInt>>>24)&255,(netInt>>>16)&255,(netInt>>>8)&255,(netInt&255)+1].join('.');
+  let lastHost=cidr>=31?bc:[(bcInt>>>24)&255,(bcInt>>>16)&255,(bcInt>>>8)&255,(bcInt&255)-1].join('.');
+  document.getElementById('subnetOutput').textContent=
 `IP Address:        ${ip}
 CIDR:              /${cidr}
 Subnet Mask:       ${mask}
-Network Address:   ${network}
-Broadcast Address: ${broadcast}
-Usable Hosts:      ${hosts}`;
+Network Address:   ${net}
+Broadcast Address: ${bc}
+First Usable Host: ${firstHost}
+Last Usable Host:  ${lastHost}
+Usable Hosts:      ${hosts.toLocaleString()}`;
 }
 document.getElementById('ip').addEventListener('keypress',e=>{ if(e.key==="Enter") calculateSubnet(); });
 document.getElementById('cidr').addEventListener('keypress',e=>{ if(e.key==="Enter") calculateSubnet(); });
 
-/* ── BASE64 ── */
-function encodeB64(){ document.getElementById('b64output').textContent = btoa(document.getElementById('b64input').value); }
-function decodeB64(){
-  try{ document.getElementById('b64output').textContent = atob(document.getElementById('b64input').value); }
-  catch{ document.getElementById('b64output').textContent = "Invalid Base64"; }
-}
+/* ═══════════════════════════════════════
+   BASE64
+═══════════════════════════════════════ */
+function encodeB64(){ document.getElementById('b64output').textContent=btoa(document.getElementById('b64input').value); }
+function decodeB64(){ try{ document.getElementById('b64output').textContent=atob(document.getElementById('b64input').value); }catch{ document.getElementById('b64output').textContent="Invalid Base64"; } }
 document.getElementById('b64input').addEventListener('keypress',e=>{ if(e.key==="Enter") encodeB64(); });
 
-/* ── QR CODE ── */
-let qr;
-document.getElementById('qrcodeInput').addEventListener('input', function(){
-  document.getElementById('qrcode').innerHTML = "";
-  if(!this.value.trim()) return;
-  qr = new QRCode(document.getElementById('qrcode'), { text:this.value, width:160, height:160 });
-});
+/* ═══════════════════════════════════════
+   QR CODE GENERATOR (with color picker)
+═══════════════════════════════════════ */
+let qrObj = null;
+function genQR(){
+  const val = document.getElementById('qrcodeInput').value.trim();
+  const fg = document.getElementById('qrFg').value;
+  const bg = document.getElementById('qrBg').value;
+  const el = document.getElementById('qrcode');
+  el.innerHTML="";
+  qrObj=null;
+  if(!val) return;
+  qrObj = new QRCode(el,{text:val,width:180,height:180,colorDark:fg,colorLight:bg});
+}
+function getQRImg(){ return document.querySelector('#qrcode img')||document.querySelector('#qrcode canvas'); }
 function copyQRCode(){
-  const img = document.querySelector('#qrcode img');
-  if(!img) return alert("Generate a QR first!");
-  fetch(img.src).then(r=>r.blob()).then(blob=>navigator.clipboard.write([new ClipboardItem({"image/png":blob})])).then(()=>alert("QR copied!")).catch(()=>alert("Copy failed"));
+  const img=getQRImg(); if(!img){alert("Generate a QR first!");return;}
+  fetch(img.src||img.toDataURL()).then(r=>r.blob()).then(b=>navigator.clipboard.write([new ClipboardItem({"image/png":b})])).then(()=>alert("Copied!")).catch(()=>alert("Failed"));
 }
 function downloadQRCode(){
-  const img = document.querySelector('#qrcode img');
-  if(!img) return alert("Generate a QR first!");
-  const a = document.createElement('a'); a.href=img.src; a.download="qrcode.png"; a.click();
+  const img=getQRImg(); if(!img){alert("Generate a QR first!");return;}
+  const a=document.createElement('a'); a.href=img.src||img.toDataURL(); a.download="qrcode.png"; a.click();
 }
 async function shareQRCode(){
-  const img = document.querySelector('#qrcode img');
-  if(!img) return alert("No QR code to share!");
-  const blob = await fetch(img.src).then(r=>r.blob());
-  const file = new File([blob],"QR_Code.png",{type:blob.type});
+  const img=getQRImg(); if(!img){alert("No QR to share!");return;}
+  const blob=await fetch(img.src||img.toDataURL()).then(r=>r.blob());
+  const file=new File([blob],"QR.png",{type:"image/png"});
   if(navigator.canShare&&navigator.canShare({files:[file]})) await navigator.share({files:[file],title:"QR Code"});
   else alert("Sharing not supported. Download instead.");
 }
 
-/* ── BARCODE ── */
-const barcodeInput = document.getElementById('barcodeInput');
-const barcodeSvg = document.getElementById('barcode');
-barcodeInput.addEventListener('input', ()=>{
-  if(!barcodeInput.value.trim()){ barcodeSvg.innerHTML=""; barcodeSvg.style.display="none"; return; }
-  barcodeSvg.style.display="block";
-  JsBarcode("#barcode", barcodeInput.value, { format:"CODE128", displayValue:true, width:2, height:60 });
-});
+/* ═══════════════════════════════════════
+   BARCODE
+═══════════════════════════════════════ */
+function genBarcode(){
+  const val=document.getElementById('barcodeInput').value.trim();
+  const svg=document.getElementById('barcode');
+  if(!val){svg.innerHTML="";svg.style.display="none";return;}
+  svg.style.display="block";
+  JsBarcode("#barcode",val,{format:"CODE128",displayValue:true,width:2,height:60,background:"transparent",lineColor:document.body.classList.contains("dark")?"#e2e8f0":"#1e1b4b"});
+}
 function getSvgCanvas(cb){
-  const svg = document.getElementById('barcode');
-  if(!svg.innerHTML.trim()) return alert("No barcode generated!");
-  const svgData = new XMLSerializer().serializeToString(svg);
-  const canvas = document.createElement('canvas');
-  const ctx = canvas.getContext('2d');
-  const img = new Image();
-  const url = URL.createObjectURL(new Blob([svgData],{type:"image/svg+xml;charset=utf-8"}));
-  img.onload = ()=>{ canvas.width=img.width; canvas.height=img.height; ctx.drawImage(img,0,0); URL.revokeObjectURL(url); cb(canvas); };
-  img.src = url;
+  const svg=document.getElementById('barcode');
+  if(!svg.innerHTML.trim()){alert("No barcode!");return;}
+  const svgData=new XMLSerializer().serializeToString(svg);
+  const canvas=document.createElement('canvas'), ctx=canvas.getContext('2d'), img=new Image();
+  const url=URL.createObjectURL(new Blob([svgData],{type:"image/svg+xml;charset=utf-8"}));
+  img.onload=()=>{canvas.width=img.width;canvas.height=img.height;ctx.fillStyle="#fff";ctx.fillRect(0,0,canvas.width,canvas.height);ctx.drawImage(img,0,0);URL.revokeObjectURL(url);cb(canvas);};
+  img.src=url;
 }
 function copyBarcode(){ getSvgCanvas(c=>c.toBlob(b=>navigator.clipboard.write([new ClipboardItem({"image/png":b})]).then(()=>alert("Copied!")))); }
-function downloadBarcode(){ getSvgCanvas(c=>{ const a=document.createElement('a'); a.href=c.toDataURL("image/png"); a.download="barcode.png"; a.click(); }); }
-async function shareBarcode(){
-  getSvgCanvas(async c=>{
-    const blob = await new Promise(r=>c.toBlob(r,"image/png"));
-    const file = new File([blob],"barcode.png",{type:"image/png"});
-    if(navigator.canShare&&navigator.canShare({files:[file]})) await navigator.share({files:[file],title:"Barcode"});
-    else alert("Sharing not supported. Download instead.");
-  });
+function downloadBarcode(){ getSvgCanvas(c=>{const a=document.createElement('a');a.href=c.toDataURL("image/png");a.download="barcode.png";a.click();}); }
+async function shareBarcode(){ getSvgCanvas(async c=>{const blob=await new Promise(r=>c.toBlob(r,"image/png"));const file=new File([blob],"barcode.png",{type:"image/png"});if(navigator.canShare&&navigator.canShare({files:[file]}))await navigator.share({files:[file],title:"Barcode"});else alert("Sharing not supported.");}); }
+
+/* ═══════════════════════════════════════
+   PDF TOOLS
+═══════════════════════════════════════ */
+function pdfOut(msg){ document.getElementById('pdfOutput').textContent=msg; }
+function pdfLink(blob, filename){
+  const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=filename; a.textContent=`⬇ Download ${filename}`; a.style.color="#4f46e5";
+  const out=document.getElementById('pdfOutput'); out.textContent=""; out.appendChild(a);
 }
 
-/* ── HEX/DEC/BIN ── */
+async function mergePDFs(){
+  const files=document.getElementById('mergeFiles').files;
+  if(files.length<2){alert("Select at least 2 PDFs");return;}
+  pdfOut("Merging...");
+  try{
+    const merged=await PDFLib.PDFDocument.create();
+    for(const f of files){ const pdf=await PDFLib.PDFDocument.load(await f.arrayBuffer()); (await merged.copyPages(pdf,pdf.getPageIndices())).forEach(p=>merged.addPage(p)); }
+    pdfLink(new Blob([await merged.save()],{type:"application/pdf"}),"merged.pdf");
+  }catch(e){pdfOut("Error: "+e);}
+}
+
+async function splitPDF(){
+  const file=document.getElementById('splitFile').files[0], n=parseInt(document.getElementById('splitPage').value);
+  if(!file||isNaN(n)){alert("Select file and page number");return;}
+  pdfOut("Splitting...");
+  try{
+    const src=await PDFLib.PDFDocument.load(await file.arrayBuffer()), total=src.getPageCount();
+    if(n<=0||n>=total){alert(`Page must be between 1 and ${total-1}`);return;}
+    async function part(idxs){ const d=await PDFLib.PDFDocument.create(); (await d.copyPages(src,idxs)).forEach(p=>d.addPage(p)); return new Blob([await d.save()],{type:"application/pdf"}); }
+    const b1=await part([...Array(n).keys()]), b2=await part([...Array(total-n).keys()].map(i=>i+n));
+    const out=document.getElementById('pdfOutput'); out.textContent="";
+    [["part1.pdf",b1],["part2.pdf",b2]].forEach(([name,blob])=>{ const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=name; a.textContent=`⬇ ${name}`; a.style.marginRight="14px"; a.style.color="#4f46e5"; out.appendChild(a); });
+  }catch(e){pdfOut("Error: "+e);}
+}
+
+async function compressPDF(){
+  const file=document.getElementById('compressFile').files[0];
+  if(!file){alert("Select a PDF");return;}
+  pdfOut("Compressing...");
+  try{
+    const bytes=await file.arrayBuffer();
+    const pdf=await PDFLib.PDFDocument.load(bytes,{updateMetadata:false});
+    const compressed=await pdf.save({useObjectStreams:true});
+    const before=(bytes.byteLength/1024).toFixed(1), after=(compressed.byteLength/1024).toFixed(1);
+    const saved=(100-(compressed.byteLength/bytes.byteLength*100)).toFixed(1);
+    const blob=new Blob([compressed],{type:"application/pdf"});
+    const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download="compressed.pdf"; a.textContent=`⬇ Download compressed.pdf`; a.style.color="#4f46e5";
+    const out=document.getElementById('pdfOutput'); out.textContent=`Before: ${before} KB → After: ${after} KB (${saved}% saved)\n`; out.appendChild(a);
+  }catch(e){pdfOut("Error: "+e);}
+}
+
+async function watermarkPDF(){
+  const file=document.getElementById('watermarkFile').files[0], text=document.getElementById('watermarkText').value.trim();
+  if(!file||!text){alert("Select a PDF and enter watermark text");return;}
+  pdfOut("Adding watermark...");
+  try{
+    const pdf=await PDFLib.PDFDocument.load(await file.arrayBuffer());
+    const pages=pdf.getPages(), font=await pdf.embedFont(PDFLib.StandardFonts.HelveticaBold);
+    pages.forEach(page=>{
+      const {width,height}=page.getSize();
+      page.drawText(text,{x:width/2-text.length*12,y:height/2,size:40,font,color:PDFLib.rgb(0.8,0.1,0.1),opacity:0.3,rotate:PDFLib.degrees(45)});
+    });
+    pdfLink(new Blob([await pdf.save()],{type:"application/pdf"}),"watermarked.pdf");
+  }catch(e){pdfOut("Error: "+e);}
+}
+
+async function rotatePDF(){
+  const file=document.getElementById('rotateFile').files[0], deg=parseInt(document.getElementById('rotateDeg').value);
+  if(!file){alert("Select a PDF");return;}
+  pdfOut("Rotating...");
+  try{
+    const pdf=await PDFLib.PDFDocument.load(await file.arrayBuffer());
+    pdf.getPages().forEach(p=>p.setRotation(PDFLib.degrees((p.getRotation().angle+deg)%360)));
+    pdfLink(new Blob([await pdf.save()],{type:"application/pdf"}),"rotated.pdf");
+  }catch(e){pdfOut("Error: "+e);}
+}
+
+/* ═══════════════════════════════════════
+   TEXT DIFF
+═══════════════════════════════════════ */
+function runDiff(){
+  const a=document.getElementById('diffOriginal').value.split('\n');
+  const b=document.getElementById('diffModified').value.split('\n');
+  const out=document.getElementById('diffOutput');
+  out.innerHTML=""; out.style.display="block";
+  let added=0,removed=0;
+  // Simple LCS-based line diff
+  const lcs=buildLCS(a,b);
+  let ai=0,bi=0,li=0;
+  const lines=[];
+  while(ai<a.length||bi<b.length){
+    if(ai<a.length&&bi<b.length&&li<lcs.length&&a[ai]===lcs[li]&&b[bi]===lcs[li]){
+      lines.push({type:'same',text:a[ai]}); ai++;bi++;li++;
+    } else if(bi<b.length&&(li>=lcs.length||b[bi]!==lcs[li])){
+      lines.push({type:'add',text:b[bi]}); bi++; added++;
+    } else {
+      lines.push({type:'rem',text:a[ai]}); ai++; removed++;
+    }
+  }
+  lines.forEach(l=>{
+    const div=document.createElement('div');
+    div.className='diff-line '+(l.type==='add'?'diff-add':l.type==='rem'?'diff-rem':'diff-same');
+    div.textContent=(l.type==='add'?'+ ':l.type==='rem'?'− ':' ')+l.text;
+    out.appendChild(div);
+  });
+  document.getElementById('diffStats').textContent=`+${added} added  −${removed} removed`;
+}
+function buildLCS(a,b){
+  const m=a.length,n=b.length,dp=Array.from({length:m+1},()=>Array(n+1).fill(0));
+  for(let i=1;i<=m;i++) for(let j=1;j<=n;j++) dp[i][j]=a[i-1]===b[j-1]?dp[i-1][j-1]+1:Math.max(dp[i-1][j],dp[i][j-1]);
+  const res=[]; let i=m,j=n;
+  while(i>0&&j>0){ if(a[i-1]===b[j-1]){res.unshift(a[i-1]);i--;j--;} else if(dp[i-1][j]>dp[i][j-1]) i--; else j--; }
+  return res;
+}
+function clearDiff(){
+  document.getElementById('diffOriginal').value="";
+  document.getElementById('diffModified').value="";
+  document.getElementById('diffOutput').innerHTML="";
+  document.getElementById('diffOutput').style.display="none";
+  document.getElementById('diffStats').textContent="";
+}
+
+/* ═══════════════════════════════════════
+   PING + LIVE CHART
+═══════════════════════════════════════ */
+let monitorInterval=null, pingData=[], pingMax=40;
+
+function clearPing(){ pingData=[]; drawChart(); document.getElementById('pingOutput').textContent=""; document.getElementById('pingStats').textContent=""; }
+
+function startMonitoring(){
+  const url=document.getElementById('pingInput').value.trim(), ms=parseInt(document.getElementById('pingInterval').value)*1000;
+  if(!url||isNaN(ms)||ms<1000){alert("Enter valid target & interval (>=1s)");return;}
+  stopMonitoring(); pingServer(url); monitorInterval=setInterval(()=>pingServer(url),ms);
+}
+function stopMonitoring(){ clearInterval(monitorInterval); monitorInterval=null; }
+
+async function pingServer(url){
+  const out=document.getElementById('pingOutput');
+  try{
+    const t0=performance.now(), r=await fetch(url,{method:'HEAD',mode:'no-cors'}), ms=parseFloat((performance.now()-t0).toFixed(1));
+    pingData.push({ms,ok:true}); if(pingData.length>pingMax) pingData.shift();
+    const ts=new Date().toLocaleTimeString();
+    out.textContent=`[${ts}] ${ms}ms\n`+out.textContent;
+    out.textContent=out.textContent.split('\n').slice(0,30).join('\n');
+  }catch(e){
+    pingData.push({ms:null,ok:false}); if(pingData.length>pingMax) pingData.shift();
+    out.textContent=`[${new Date().toLocaleTimeString()}] FAILED\n`+out.textContent;
+  }
+  drawChart(); updatePingStats();
+}
+
+function drawChart(){
+  const canvas=document.getElementById('pingChart');
+  const ctx=canvas.getContext('2d');
+  canvas.width=canvas.offsetWidth||600; canvas.height=140;
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  if(pingData.length<2) return;
+  const vals=pingData.map(d=>d.ms||0), maxVal=Math.max(...vals,1);
+  const w=canvas.width, h=canvas.height, pad=16;
+  // Grid lines
+  ctx.strokeStyle="rgba(128,128,128,0.15)"; ctx.lineWidth=1;
+  [0.25,0.5,0.75,1].forEach(f=>{ ctx.beginPath(); ctx.moveTo(pad,h-pad-f*(h-2*pad)); ctx.lineTo(w-pad,h-pad-f*(h-2*pad)); ctx.stroke(); });
+  // Line
+  const isDark=document.body.classList.contains("dark");
+  ctx.strokeStyle=isDark?"#818cf8":"#4f46e5"; ctx.lineWidth=2; ctx.lineJoin="round";
+  ctx.beginPath();
+  pingData.forEach((d,i)=>{
+    const x=pad+(i/(pingData.length-1))*(w-2*pad);
+    const y=d.ok?h-pad-((d.ms/maxVal)*(h-2*pad)):h-pad;
+    if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
+    // Dot
+    ctx.save(); ctx.beginPath(); ctx.arc(x,y,3,0,Math.PI*2); ctx.fillStyle=d.ok?"#22c55e":"#ef4444"; ctx.fill(); ctx.restore();
+  });
+  ctx.stroke();
+  // Label max
+  ctx.fillStyle=isDark?"#94a3b8":"#6b7280"; ctx.font="11px Arial";
+  ctx.fillText(maxVal.toFixed(0)+"ms",2,pad+4);
+}
+
+function updatePingStats(){
+  const vals=pingData.filter(d=>d.ok).map(d=>d.ms);
+  if(!vals.length) return;
+  const avg=(vals.reduce((a,b)=>a+b,0)/vals.length).toFixed(1);
+  const min=Math.min(...vals).toFixed(1), max=Math.max(...vals).toFixed(1);
+  const fails=pingData.filter(d=>!d.ok).length;
+  document.getElementById('pingStats').textContent=`Avg: ${avg}ms  Min: ${min}ms  Max: ${max}ms  Failures: ${fails}/${pingData.length}`;
+}
+
+window.addEventListener('resize',()=>{ if(pingData.length) drawChart(); });
+
+/* ═══════════════════════════════════════
+   HEX / DEC / BIN
+═══════════════════════════════════════ */
 function convertNumber(){
-  let v = document.getElementById("numberInput").value.trim();
-  if(!v) return;
-  let num = /^0x/i.test(v) ? parseInt(v,16) : /^[01]+$/.test(v) ? parseInt(v,2) : parseInt(v,10);
-  document.getElementById("numberResult").textContent =
-`Decimal : ${num}\nHex     : 0x${num.toString(16).toUpperCase()}\nBinary  : ${num.toString(2)}`;
+  let v=document.getElementById("numberInput").value.trim(); if(!v) return;
+  let num=/^0x/i.test(v)?parseInt(v,16):/^[01]+$/.test(v)?parseInt(v,2):parseInt(v,10);
+  document.getElementById("numberResult").textContent=`Decimal : ${num}\nHex     : 0x${num.toString(16).toUpperCase()}\nBinary  : ${num.toString(2)}\nOctal   : ${num.toString(8)}`;
 }
 document.getElementById('numberInput').addEventListener('keypress',e=>{ if(e.key==="Enter") convertNumber(); });
 
-/* ── PASSWORD GENERATOR ── */
+/* ═══════════════════════════════════════
+   PASSWORD GENERATOR
+═══════════════════════════════════════ */
 function genPass(){
-  const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*";
-  let p = Array.from({length:16},()=>chars[Math.floor(Math.random()*chars.length)]).join('');
-  document.getElementById("passOut").textContent = p;
+  let chars="abcdefghijklmnopqrstuvwxyz";
+  if(document.getElementById('passUpper').checked) chars+="ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+  if(document.getElementById('passNum').checked) chars+="0123456789";
+  if(document.getElementById('passSym').checked) chars+="!@#$%^&*()_+-=[]{}";
+  const len=parseInt(document.getElementById('passLen').value)||16;
+  const p=Array.from({length:len},()=>chars[Math.floor(Math.random()*chars.length)]).join('');
+  document.getElementById("passOut").textContent=p;
+  // Strength
+  let score=0;
+  if(len>=12) score++; if(len>=16) score++; if(/[A-Z]/.test(p)) score++; if(/[0-9]/.test(p)) score++; if(/[^a-zA-Z0-9]/.test(p)) score++;
+  const labels=["","Weak 🔴","Fair 🟡","Good 🟢","Strong 💪","Very Strong 🔒"];
+  document.getElementById('passStrength').textContent="Strength: "+labels[Math.min(score,5)];
 }
 
-/* ── MAC LOOKUP ── */
+/* ═══════════════════════════════════════
+   MAC LOOKUP
+═══════════════════════════════════════ */
 function lookupMac(){
-  const mac = document.getElementById('macInput').value.trim();
-  if(!mac) return alert('Enter a MAC address');
-  fetch(`https://api.macvendors.com/${mac}`)
-    .then(r=>r.text())
-    .then(d=>document.getElementById('macOutput').textContent = d)
-    .catch(()=>document.getElementById('macOutput').textContent = 'Lookup failed');
+  const mac=document.getElementById('macInput').value.trim(); if(!mac){alert('Enter a MAC');return;}
+  fetch(`https://api.macvendors.com/${mac}`).then(r=>r.text()).then(d=>document.getElementById('macOutput').textContent=d).catch(()=>document.getElementById('macOutput').textContent='Lookup failed');
 }
 
-/* ── SYSTEM INFO ── */
+/* ═══════════════════════════════════════
+   SYSTEM INFO
+═══════════════════════════════════════ */
 async function getLocalIP(){
   return new Promise(resolve=>{
-    const rtc = new RTCPeerConnection({iceServers:[]});
-    rtc.createDataChannel("");
-    rtc.createOffer().then(o=>rtc.setLocalDescription(o)).catch(()=>{});
-    rtc.onicecandidate = evt=>{
-      if(!evt||!evt.candidate) return;
-      const m = evt.candidate.candidate.match(/(\d{1,3}(\.\d{1,3}){3})/);
-      if(m) resolve(m[1]);
-    };
+    const rtc=new RTCPeerConnection({iceServers:[]});
+    rtc.createDataChannel(""); rtc.createOffer().then(o=>rtc.setLocalDescription(o)).catch(()=>{});
+    rtc.onicecandidate=evt=>{ if(!evt||!evt.candidate)return; const m=evt.candidate.candidate.match(/(\d{1,3}(\.\d{1,3}){3})/); if(m) resolve(m[1]); };
     setTimeout(()=>resolve("Unavailable"),2000);
   });
 }
+
 async function showSystemInfo(){
-  const out = document.getElementById('sysInfoOutput');
-  out.textContent = "Gathering info...";
-  const cpu = navigator.hardwareConcurrency||"?";
-  const ram = navigator.deviceMemory||"?";
-  const platform = navigator.platform||"?";
-  const ua = navigator.userAgent;
-  const screen_ = `${window.screen.width}x${window.screen.height}`;
-  const tz = Intl.DateTimeFormat().resolvedOptions().timeZone||"?";
-  let gpu = "Unavailable";
-  try{
-    const gl = document.createElement('canvas').getContext('webgl');
-    const di = gl&&gl.getExtension('WEBGL_debug_renderer_info');
-    if(di) gpu = gl.getParameter(di.UNMASKED_RENDERER_WEBGL);
-  }catch(e){}
-  let battery = "Unavailable";
-  try{ const b=await navigator.getBattery(); battery=`${Math.round(b.level*100)}% | Charging: ${b.charging}`; }catch(e){}
+  const out=document.getElementById('sysInfoOutput'); out.textContent="Gathering...";
+  let gpu="Unavailable";
+  try{ const gl=document.createElement('canvas').getContext('webgl'); const di=gl&&gl.getExtension('WEBGL_debug_renderer_info'); if(di) gpu=gl.getParameter(di.UNMASKED_RENDERER_WEBGL); }catch(e){}
+  let battery="Unavailable";
+  try{ const b=await navigator.getBattery(); battery=`${Math.round(b.level*100)}%  Charging: ${b.charging}`; }catch(e){}
   let publicIP="Unavailable";
   try{ publicIP=(await (await fetch('https://api.ipify.org?format=json')).json()).ip; }catch(e){}
   let localIP="Unavailable";
   try{ localIP=await getLocalIP(); }catch(e){}
-  out.textContent =
+  // Connection type
+  const conn=navigator.connection||navigator.mozConnection||navigator.webkitConnection;
+  const connType=conn?(conn.effectiveType||conn.type||"Unknown"):"Unavailable";
+  const connSpeed=conn&&conn.downlink?conn.downlink+" Mbps":"?";
+
+  const ua=navigator.userAgent;
+  out.textContent=
 `=== SYSTEM INFO ===
-Public IP:   ${publicIP}
-Local IP:    ${localIP}
-Platform:    ${platform}
-CPU Cores:   ${cpu}
-RAM:         ${ram} GB
-GPU:         ${gpu}
-Resolution:  ${screen_}
-Timezone:    ${tz}
+Public IP:        ${publicIP}
+Local IP:         ${localIP}
+Platform:         ${navigator.platform||"?"}
+CPU Cores:        ${navigator.hardwareConcurrency||"?"}
+RAM (approx):     ${navigator.deviceMemory||"?"} GB
+GPU:              ${gpu}
+Screen:           ${window.screen.width}x${window.screen.height} (${window.devicePixelRatio}x DPR)
+Timezone:         ${Intl.DateTimeFormat().resolvedOptions().timeZone}
+
+=== CONNECTION ===
+Type:             ${connType}
+Est. Speed:       ${connSpeed}
 
 === BROWSER ===
 User Agent: ${ua}
@@ -549,156 +907,80 @@ User Agent: ${ua}
 ${battery}`;
 }
 
-/* ── PING ── */
-let monitorInterval;
-function startMonitoring(){
-  const url = document.getElementById('pingInput').value.trim();
-  const ms = parseInt(document.getElementById('pingInterval').value)*1000;
-  if(!url||isNaN(ms)||ms<1000){ alert("Enter valid target & interval (>=1s)"); return; }
-  stopMonitoring();
-  pingServer(url);
-  monitorInterval = setInterval(()=>pingServer(url), ms);
-}
-function stopMonitoring(){ clearInterval(monitorInterval); monitorInterval=null; }
-async function pingServer(url){
-  const out = document.getElementById('pingOutput');
-  try{
-    const t0 = performance.now();
-    const r = await fetch(url,{method:'GET'});
-    const ms = (performance.now()-t0).toFixed(1);
-    out.textContent = `[${new Date().toLocaleTimeString()}] ${url} → ${ms}ms (${r.status})\n`+out.textContent;
-  }catch(e){
-    out.textContent = `[${new Date().toLocaleTimeString()}] ${url} → FAILED\n`+out.textContent;
-  }
-}
-
-/* ── NETWORK TOOLS ── */
+/* ═══════════════════════════════════════
+   NETWORK TOOLS
+═══════════════════════════════════════ */
 function getIpInfo(){
-  const input = document.getElementById('networkInput').value.trim();
-  const out = document.getElementById('networkOutput');
-  if(!input) return alert('Enter IP or domain');
-  const url = /\d+\.\d+\.\d+\.\d+/.test(input)?`https://ipapi.co/${input}/json/`:"https://ipapi.co/json/";
-  out.textContent = 'Fetching...';
-  fetch(url).then(r=>r.json()).then(d=>out.textContent=JSON.stringify(d,null,2)).catch(()=>out.textContent='Failed');
+  const i=document.getElementById('networkInput').value.trim(), out=document.getElementById('networkOutput');
+  if(!i){alert('Enter IP or domain');return;}
+  out.textContent='Fetching...';
+  fetch(/\d+\.\d+\.\d+\.\d+/.test(i)?`https://ipapi.co/${i}/json/`:"https://ipapi.co/json/").then(r=>r.json()).then(d=>out.textContent=JSON.stringify(d,null,2)).catch(()=>out.textContent='Failed');
 }
 function urlToIp(){
-  const input = document.getElementById('networkInput').value.trim();
-  const out = document.getElementById('networkOutput');
-  if(!input) return alert('Enter a URL');
-  out.textContent='Resolving...';
-  fetch(`https://dns.google/resolve?name=${input}`).then(r=>r.json()).then(d=>{
-    const ip = d.Answer?d.Answer.map(a=>a.data).join(', '):'No IP found';
-    out.textContent=`IP for ${input}: ${ip}`;
-  }).catch(()=>out.textContent='Failed');
+  const i=document.getElementById('networkInput').value.trim(), out=document.getElementById('networkOutput');
+  if(!i){alert('Enter a URL');return;} out.textContent='Resolving...';
+  fetch(`https://dns.google/resolve?name=${i}`).then(r=>r.json()).then(d=>{ out.textContent=`IP for ${i}: ${d.Answer?d.Answer.map(a=>a.data).join(', '):'No IP found'}`; }).catch(()=>out.textContent='Failed');
 }
 function dnsLookup(){
-  const input = document.getElementById('networkInput').value.trim();
-  const out = document.getElementById('networkOutput');
-  if(!input) return alert('Enter a domain');
-  out.textContent='Looking up DNS...';
-  fetch(`https://dns.google/resolve?name=${input}`).then(r=>r.json()).then(d=>out.textContent=JSON.stringify(d,null,2)).catch(()=>out.textContent='DNS lookup failed');
+  const i=document.getElementById('networkInput').value.trim(), out=document.getElementById('networkOutput');
+  if(!i){alert('Enter a domain');return;} out.textContent='Looking up...';
+  fetch(`https://dns.google/resolve?name=${i}`).then(r=>r.json()).then(d=>out.textContent=JSON.stringify(d,null,2)).catch(()=>out.textContent='Failed');
 }
 async function checkHosting(){
-  const domain = document.getElementById('networkInput').value.trim();
-  const out = document.getElementById('networkOutput');
-  if(!domain) return alert('Enter a domain');
-  out.textContent='Checking...';
+  const domain=document.getElementById('networkInput').value.trim(), out=document.getElementById('networkOutput');
+  if(!domain){alert('Enter a domain');return;} out.textContent='Checking...';
   try{
-    const dns = await (await fetch(`https://dns.google/resolve?name=${domain}`)).json();
-    if(!dns.Answer){ out.textContent='Could not resolve domain'; return; }
-    const ip = dns.Answer.find(a=>a.type===1)?.data;
-    if(!ip){ out.textContent='No IPv4 found'; return; }
-    const info = await (await fetch(`https://ipwhois.app/json/${ip}`)).json();
+    const dns=await (await fetch(`https://dns.google/resolve?name=${domain}`)).json();
+    if(!dns.Answer){out.textContent='Could not resolve';return;}
+    const ip=dns.Answer.find(a=>a.type===1)?.data;
+    if(!ip){out.textContent='No IPv4 found';return;}
+    const info=await (await fetch(`https://ipwhois.app/json/${ip}`)).json();
     out.textContent=`Domain:  ${domain}\nIP:      ${ip}\nISP:     ${info.isp||'?'}\nOrg:     ${info.org||'?'}\nCountry: ${info.country||'?'}\nRegion:  ${info.region||'?'}\nCity:    ${info.city||'?'}`;
-  }catch(e){ out.textContent='Error fetching hosting info'; }
+  }catch(e){out.textContent='Error: '+e;}
 }
 async function shortenURL(){
-  const input = document.getElementById('networkInput').value.trim();
-  const out = document.getElementById('networkOutput');
-  if(!input) return alert("Enter a URL to shorten");
-  out.textContent="Shortening...";
-  try{
-    const short = await (await fetch(`https://tinyurl.com/api-create.php?url=${encodeURIComponent(input)}`)).text();
-    out.textContent=`Shortened URL:\n${short}`;
-  }catch(e){ out.textContent="Failed to shorten URL"; }
+  const i=document.getElementById('networkInput').value.trim(), out=document.getElementById('networkOutput');
+  if(!i){alert("Enter a URL");return;} out.textContent='Shortening...';
+  try{ out.textContent='Shortened:\n'+(await (await fetch(`https://tinyurl.com/api-create.php?url=${encodeURIComponent(i)}`)).text()); }
+  catch(e){out.textContent='Failed';}
 }
 
-/* ── GOOGLE DRIVE UPLOAD + QR ── */
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwuumk20HhmH8o2SJsp8n_KgYPYu-3OuOk9JvmEzoSk66yyICYqB39jFCM10_uBUDMb/exec";
-let selectedFile = null;
-let uploadedFileName = "";
-const dropArea = document.getElementById("dropArea");
-const fileInput = document.getElementById("fileInput");
-dropArea.addEventListener("click", ()=>fileInput.click());
-dropArea.addEventListener("dragover", e=>{ e.preventDefault(); dropArea.style.borderColor="#007BFF"; });
-dropArea.addEventListener("dragleave", ()=>{ dropArea.style.borderColor="#666"; });
-dropArea.addEventListener("drop", e=>{ e.preventDefault(); dropArea.style.borderColor="#666"; selectedFile=e.dataTransfer.files[0]; document.getElementById("uploadStatus").textContent="Selected: "+selectedFile.name; });
-fileInput.addEventListener("change", ()=>{ selectedFile=fileInput.files[0]; document.getElementById("uploadStatus").textContent="Selected: "+selectedFile.name; });
+/* ═══════════════════════════════════════
+   GOOGLE DRIVE UPLOAD + QR
+═══════════════════════════════════════ */
+const SCRIPT_URL="https://script.google.com/macros/s/AKfycbwuumk20HhmH8o2SJsp8n_KgYPYu-3OuOk9JvmEzoSk66yyICYqB39jFCM10_uBUDMb/exec";
+let selectedFile=null, uploadedFileName="";
+const dropArea=document.getElementById("dropArea"), fileInput=document.getElementById("fileInput");
+dropArea.addEventListener("click",()=>fileInput.click());
+dropArea.addEventListener("dragover",e=>{e.preventDefault();dropArea.style.borderColor="#4f46e5";});
+dropArea.addEventListener("dragleave",()=>{dropArea.style.borderColor="";});
+dropArea.addEventListener("drop",e=>{e.preventDefault();dropArea.style.borderColor="";selectedFile=e.dataTransfer.files[0];document.getElementById("uploadStatus").textContent="Selected: "+selectedFile.name;});
+fileInput.addEventListener("change",()=>{selectedFile=fileInput.files[0];document.getElementById("uploadStatus").textContent="Selected: "+selectedFile.name;});
 function startUpload(makeQR=false){
-  if(!selectedFile){ alert("Select a file first."); return; }
-  uploadedFileName = selectedFile.name;
-  document.getElementById("qrSection").style.display="none";
-  document.getElementById("qrOutput").innerHTML="";
+  if(!selectedFile){alert("Select a file first.");return;}
+  uploadedFileName=selectedFile.name;
+  document.getElementById("qrSection").style.display="none"; document.getElementById("qrOutput").innerHTML="";
   document.getElementById("uploadStatus").textContent="Uploading...";
-  const reader = new FileReader();
-  reader.onload = e=>{
+  const reader=new FileReader();
+  reader.onload=e=>{
     fetch(SCRIPT_URL,{method:"POST",body:new URLSearchParams({name:selectedFile.name,mimeType:selectedFile.type,file:e.target.result.split(",")[1]})})
-    .then(r=>r.text())
-    .then(link=>{ document.getElementById("uploadStatus").textContent="Uploaded:\n"+link; if(makeQR) generateQR(link); })
+    .then(r=>r.text()).then(link=>{document.getElementById("uploadStatus").textContent="Uploaded:\n"+link; if(makeQR){document.getElementById("qrSection").style.display="block";document.getElementById("qrOutput").innerHTML="";new QRCode(document.getElementById("qrOutput"),{text:link,width:200,height:200});}})
     .catch(err=>document.getElementById("uploadStatus").textContent="Upload failed: "+err);
   };
   reader.readAsDataURL(selectedFile);
 }
-function generateQR(url){
-  document.getElementById("qrSection").style.display="block";
-  document.getElementById("qrOutput").innerHTML="";
-  new QRCode(document.getElementById("qrOutput"),{text:url,width:200,height:200});
-}
 function copyQR(){
-  const img = document.querySelector("#qrOutput img");
-  if(!img) return alert("No QR to copy!");
-  fetch(img.src).then(r=>r.blob()).then(b=>navigator.clipboard.write([new ClipboardItem({"image/png":b})])).then(()=>alert("Copied!")).catch(()=>alert("Copy failed"));
+  const img=document.querySelector("#qrOutput img"); if(!img){alert("No QR!");return;}
+  fetch(img.src).then(r=>r.blob()).then(b=>navigator.clipboard.write([new ClipboardItem({"image/png":b})])).then(()=>alert("Copied!")).catch(()=>alert("Failed"));
 }
 function downloadQR(){
-  const img = document.querySelector("#qrOutput img");
-  if(!img) return alert("No QR to download!");
+  const img=document.querySelector("#qrOutput img"); if(!img){alert("No QR!");return;}
   const a=document.createElement('a'); a.href=img.src; a.download=(uploadedFileName.replace(/\.[^/.]+$/,"")||"qr")+"_QR.png"; a.click();
 }
 async function shareQR(){
-  const img = document.querySelector("#qrOutput img");
-  if(!img) return alert("No QR to share!");
-  const blob=await fetch(img.src).then(r=>r.blob());
-  const file=new File([blob],"QR_Code.png",{type:blob.type});
-  if(navigator.canShare&&navigator.canShare({files:[file]})) await navigator.share({files:[file],title:"QR Code"});
-  else alert("Sharing not supported. Download instead.");
-}
-
-/* ── PDF TOOLS ── */
-async function mergePDFs(){
-  const files = document.getElementById('mergeFiles').files;
-  if(files.length<2){ alert("Select at least 2 PDFs"); return; }
-  const merged = await PDFLib.PDFDocument.create();
-  for(const f of files){
-    const pdf = await PDFLib.PDFDocument.load(await f.arrayBuffer());
-    const pages = await merged.copyPages(pdf,pdf.getPageIndices());
-    pages.forEach(p=>merged.addPage(p));
-  }
-  const blob = new Blob([await merged.save()],{type:"application/pdf"});
-  const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download="merged.pdf"; a.textContent="Download Merged PDF";
-  const out=document.getElementById('pdfOutput'); out.textContent="Merged PDF ready: "; out.appendChild(a);
-}
-async function splitPDF(){
-  const file=document.getElementById('splitFile').files[0];
-  const pageNum=parseInt(document.getElementById('splitPage').value);
-  if(!file||isNaN(pageNum)){ alert("Select file and page number"); return; }
-  const pdf=await PDFLib.PDFDocument.load(await file.arrayBuffer());
-  const total=pdf.getPageCount();
-  if(pageNum<=0||pageNum>=total){ alert("Invalid page number"); return; }
-  async function part(idxs){ const d=await PDFLib.PDFDocument.create(); (await d.copyPages(pdf,idxs)).forEach(p=>d.addPage(p)); return new Blob([await d.save()],{type:"application/pdf"}); }
-  const b1=await part([...Array(pageNum).keys()]);
-  const b2=await part([...Array(total-pageNum).keys()].map(i=>i+pageNum));
-  const out=document.getElementById('pdfOutput'); out.textContent="Split ready: ";
-  [["part1.pdf",b1],["part2.pdf",b2]].forEach(([name,blob])=>{ const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=name; a.textContent=name; a.style.marginRight="12px"; out.appendChild(a); });
+  const img=document.querySelector("#qrOutput img"); if(!img){alert("No QR!");return;}
+  const blob=await fetch(img.src).then(r=>r.blob()); const file=new File([blob],"QR.png",{type:blob.type});
+  if(navigator.canShare&&navigator.canShare({files:[file]})) await navigator.share({files:[file],title:"QR Code"}); else alert("Sharing not supported.");
 }
 </script>
 </body>
