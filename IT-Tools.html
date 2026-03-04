@@ -102,6 +102,43 @@ pre{background:var(--console-bg)!important;color:var(--console-text)!important;p
   .button-row button{min-width:70px;font-size:12px;padding:7px;}
   .tool-box{padding:14px;}
 }
+
+/* USAGE STATS PANEL */
+#usagePanel {
+  position:fixed; right:0; top:50%; transform:translateY(-50%);
+  width:260px; background:var(--box-bg); border:1px solid var(--border);
+  border-right:none; border-radius:12px 0 0 12px;
+  box-shadow:-4px 0 20px rgba(0,0,0,0.15);
+  z-index:500; transition:transform .3s ease;
+  transform:translateY(-50%) translateX(220px);
+}
+#usagePanel:hover, #usagePanel.open {
+  transform:translateY(-50%) translateX(0);
+}
+#usagePanelTab {
+  position:absolute; left:-36px; top:50%; transform:translateY(-50%);
+  background:var(--accent); color:#fff; width:36px; height:60px;
+  border-radius:8px 0 0 8px; display:flex; align-items:center;
+  justify-content:center; cursor:pointer; font-size:18px; writing-mode:vertical-rl;
+  font-size:13px; letter-spacing:1px; padding:6px 0;
+}
+#usagePanelInner { padding:14px; max-height:70vh; overflow-y:auto; }
+#usagePanelInner h4 { margin-bottom:10px; font-size:14px; color:var(--sub); text-transform:uppercase; letter-spacing:1px; }
+.usage-row { display:flex; justify-content:space-between; align-items:center; padding:6px 0; border-bottom:1px solid var(--border); font-size:13px; }
+.usage-row:last-child { border-bottom:none; }
+.usage-bar-wrap { width:100%; background:var(--border); border-radius:4px; height:4px; margin-top:3px; }
+.usage-bar { height:4px; border-radius:4px; background:var(--accent); transition:width .5s; }
+.usage-count { font-weight:bold; color:var(--accent); min-width:32px; text-align:right; }
+
+/* EXPORT + SHORTCUT TOAST */
+#kbToast {
+  position:fixed; bottom:20px; left:50%; transform:translateX(-50%);
+  background:#1e293b; color:#fff; padding:8px 18px; border-radius:20px;
+  font-size:13px; opacity:0; pointer-events:none; transition:opacity .3s;
+  z-index:9999;
+}
+#kbToast.show { opacity:1; }
+
 </style>
 </head>
 <body>
@@ -110,6 +147,7 @@ pre{background:var(--console-bg)!important;color:var(--console-text)!important;p
   <div class="topbar">
     <h2>🛠️ IT Tools</h2>
     <input type="text" id="searchBar" placeholder="🔍 Search tools..." oninput="filterTools()">
+    <button onclick="exportAllOutputs()" style="background:var(--accent);color:#fff;border:none;padding:7px 12px;border-radius:8px;cursor:pointer;font-size:12px;white-space:nowrap;flex-shrink:0;" title="Export all tool outputs (Ctrl+E)">⬇ Export</button>
     <div id="themeToggle" onclick="toggleTheme()">🌙</div>
   </div>
 </div>
@@ -427,6 +465,20 @@ pre{background:var(--console-bg)!important;color:var(--console-text)!important;p
     </div>
   </div>
 </div>
+
+
+<!-- USAGE STATS PANEL -->
+<div id="usagePanel">
+  <div id="usagePanelTab" onclick="toggleUsagePanel()">📊 Stats</div>
+  <div id="usagePanelInner">
+    <h4>🔥 Tool Usage (All Users)</h4>
+    <div id="usageList"><div style="color:var(--sub);font-size:13px;">Loading...</div></div>
+    <div style="margin-top:10px;font-size:11px;color:var(--sub);text-align:center;">Updates live · Shared globally</div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div id="kbToast"></div>
 
 <footer style="text-align:center;padding:20px;color:var(--sub);font-size:13px;border-top:1px solid var(--border);margin-top:16px;">
   IT Tools — All processing done in your browser
@@ -948,7 +1000,7 @@ async function shortenURL(){
 /* ═══════════════════════════════════════
    GOOGLE DRIVE UPLOAD + QR
 ═══════════════════════════════════════ */
-const SCRIPT_URL="https://script.google.com/macros/s/AKfycbwuumk20HhmH8o2SJsp8n_KgYPYu-3OuOk9JvmEzoSk66yyICYqB39jFCM10_uBUDMb/exec";
+const SCRIPT_URL="https://script.google.com/macros/s/AKfycbx5zOYwkqbNB6PBGFxMvn1-iQJv7uAj777MXMTzcK0HDr7qvLIBjefSDEBIGPaHw4Z9/exec";
 let selectedFile=null, uploadedFileName="";
 const dropArea=document.getElementById("dropArea"), fileInput=document.getElementById("fileInput");
 dropArea.addEventListener("click",()=>fileInput.click());
@@ -982,6 +1034,180 @@ async function shareQR(){
   const blob=await fetch(img.src).then(r=>r.blob()); const file=new File([blob],"QR.png",{type:blob.type});
   if(navigator.canShare&&navigator.canShare({files:[file]})) await navigator.share({files:[file],title:"QR Code"}); else alert("Sharing not supported.");
 }
+
+/* ═══════════════════════════════════════
+   USAGE TRACKER (Global / Shared)
+═══════════════════════════════════════ */
+// ⚠️ Replace with your deployed Apps Script URL after deployment
+const TRACKER_URL = "https://script.google.com/macros/s/AKfycbwuOiQuHtxzzdngbZ1_RX900SAcImgqPxkLKYGV-5EZ8hC6lgfsroZAwPEpFunjYomO/exec";
+
+let cbTrack = 0;
+function trackJsonp(params, cb) {
+  if (!TRACKER_URL || TRACKER_URL.includes("PASTE")) return;
+  const name = "_tc" + (++cbTrack);
+  window[name] = function(data) { delete window[name]; const el=document.getElementById(name); if(el) document.head.removeChild(el); if(cb) cb(data); };
+  params.callback = name;
+  const qs = Object.entries(params).map(([k,v])=>encodeURIComponent(k)+"="+encodeURIComponent(v)).join("&");
+  const s = document.createElement("script"); s.id=name; s.src=TRACKER_URL+"?"+qs; document.head.appendChild(s);
+}
+
+function trackUsage(toolName) {
+  trackJsonp({ action: "increment", tool: toolName }, function(data) {
+    if (data && data.count !== undefined) refreshUsagePanel();
+  });
+}
+
+function refreshUsagePanel() {
+  trackJsonp({ action: "getAll" }, function(data) {
+    if (!Array.isArray(data)) return;
+    const list = document.getElementById("usageList");
+    if (!data.length) { list.innerHTML = '<div style="color:var(--sub);font-size:13px;">No data yet</div>'; return; }
+    const maxCount = data[0].count || 1;
+    list.innerHTML = data.map(d => `
+      <div class="usage-row">
+        <div style="flex:1;min-width:0;">
+          <div style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${d.tool}</div>
+          <div class="usage-bar-wrap"><div class="usage-bar" style="width:${Math.round((d.count/maxCount)*100)}%"></div></div>
+        </div>
+        <div class="usage-count">${d.count}</div>
+      </div>`).join("");
+  });
+}
+
+function toggleUsagePanel() {
+  const p = document.getElementById("usagePanel");
+  p.classList.toggle("open");
+  if (p.classList.contains("open")) refreshUsagePanel();
+}
+
+// Load stats on page load
+setTimeout(refreshUsagePanel, 1000);
+setInterval(refreshUsagePanel, 30000);
+
+/* ═══════════════════════════════════════
+   KEYBOARD SHORTCUTS
+═══════════════════════════════════════ */
+function showToast(msg, dur=1800) {
+  const t = document.getElementById("kbToast");
+  t.textContent = msg; t.classList.add("show");
+  setTimeout(() => t.classList.remove("show"), dur);
+}
+
+document.addEventListener("keydown", function(e) {
+  const tag = document.activeElement.tagName;
+  const typing = tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT";
+
+  // Ctrl+K → focus search
+  if (e.ctrlKey && e.key === "k") {
+    e.preventDefault();
+    document.getElementById("searchBar").focus();
+    document.getElementById("searchBar").select();
+    showToast("🔍 Search focused");
+  }
+
+  // Ctrl+E → export outputs
+  if (e.ctrlKey && e.key === "e") {
+    e.preventDefault();
+    exportAllOutputs();
+  }
+
+  // Ctrl+D → toggle dark mode
+  if (e.ctrlKey && e.key === "d") {
+    e.preventDefault();
+    toggleTheme();
+    showToast("🌗 Theme toggled");
+  }
+
+  // Escape → clear search
+  if (e.key === "Escape" && document.activeElement === document.getElementById("searchBar")) {
+    document.getElementById("searchBar").value = "";
+    filterTools();
+    document.getElementById("searchBar").blur();
+  }
+});
+
+// Show shortcut hint on load
+setTimeout(() => showToast("💡 Ctrl+K = Search  ·  Ctrl+E = Export  ·  Ctrl+D = Theme"), 2000);
+
+/* ═══════════════════════════════════════
+   EXPORT ALL OUTPUTS
+═══════════════════════════════════════ */
+function exportAllOutputs() {
+  const outputs = [
+    ["Subnet Calculator",    "subnetOutput"],
+    ["Base64",               "b64output"],
+    ["Hex/Dec/Bin",          "numberResult"],
+    ["Password",             "passOut"],
+    ["MAC Lookup",           "macOutput"],
+    ["Network Tools",        "networkOutput"],
+    ["Ping Monitor",         "pingOutput"],
+    ["System Info",          "sysInfoOutput"],
+    ["PDF Log",              "pdfOutput"],
+    ["Upload Status",        "uploadStatus"],
+  ];
+
+  const now = new Date().toLocaleString();
+  let report = `IT TOOLS EXPORT
+Generated: ${now}
+${"═".repeat(50)}
+
+`;
+  let hasContent = false;
+
+  outputs.forEach(([label, id]) => {
+    const el = document.getElementById(id);
+    const text = el ? el.textContent.trim() : "";
+    if (text && text !== "Press button to scan..." && text !== "Results will appear here..." && text !== "Waiting for file..." && text !== "PDF output will appear here...") {
+      report += `[ ${label} ]
+${text}
+
+${"─".repeat(40)}
+
+`;
+      hasContent = true;
+    }
+  });
+
+  if (!hasContent) { showToast("⚠️ No outputs to export yet"); return; }
+
+  const blob = new Blob([report], { type: "text/plain" });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = `IT-Tools-Export-${Date.now()}.txt`;
+  a.click();
+  showToast("✅ Exported!");
+}
+
+/* ═══════════════════════════════════════
+   HOOK trackUsage into tool buttons
+═══════════════════════════════════════ */
+// Wrap key action functions to auto-track
+const _trackWrap = (fn, name) => function(...args) { trackUsage(name); return fn.apply(this, args); };
+window.addEventListener("load", () => {
+  calculateSubnet   = _trackWrap(calculateSubnet,   "Subnet Calculator");
+  encodeB64         = _trackWrap(encodeB64,          "Base64 Encode/Decode");
+  decodeB64         = _trackWrap(decodeB64,          "Base64 Encode/Decode");
+  convertNumber     = _trackWrap(convertNumber,      "Hex/Dec/Bin Converter");
+  genPass           = _trackWrap(genPass,            "Password Generator");
+  lookupMac         = _trackWrap(lookupMac,          "MAC Vendor Lookup");
+  getIpInfo         = _trackWrap(getIpInfo,          "Network Tools");
+  urlToIp           = _trackWrap(urlToIp,            "Network Tools");
+  dnsLookup         = _trackWrap(dnsLookup,          "Network Tools");
+  checkHosting      = _trackWrap(checkHosting,       "Network Tools");
+  shortenURL        = _trackWrap(shortenURL,         "Network Tools");
+  startMonitoring   = _trackWrap(startMonitoring,    "Ping Monitor");
+  runDiff           = _trackWrap(runDiff,            "Text Diff");
+  showSystemInfo    = _trackWrap(showSystemInfo,     "System Info");
+  mergePDFs         = _trackWrap(mergePDFs,          "PDF Tools");
+  splitPDF          = _trackWrap(splitPDF,           "PDF Tools");
+  compressPDF       = _trackWrap(compressPDF,        "PDF Tools");
+  watermarkPDF      = _trackWrap(watermarkPDF,       "PDF Tools");
+  rotatePDF         = _trackWrap(rotatePDF,          "PDF Tools");
+  startUpload       = _trackWrap(startUpload,        "Drive Upload + QR");
+  genQR             = _trackWrap(genQR,              "QR Code Generator");
+  genBarcode        = _trackWrap(genBarcode,         "Barcode Generator");
+});
+
 </script>
 </body>
 </html>
