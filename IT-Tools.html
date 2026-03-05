@@ -399,92 +399,77 @@ pre{background:var(--console-bg)!important;color:var(--console-text)!important;p
   </div>
 </div>
 
-<div class="tool-box" data-tool="internet links proxy proxyium croxyproxy fast pairdrop network web">
-  <div class="tool-header">
-    <h3>🌍 Internet Links</h3>
-    <button class="star-btn" onclick="toggleFav(this,'Internet Links')">☆</button>
+<div class="tool-box" data-tool="other tools links internet proxy croxyproxy fast pairdrop it-tools tinywow pdf tools io free remove bg canva polotno jpg web partition disk ai study text human krea speechify plagiarism sentencer handwriting typing test software downloads opendirectory archive filecr getintopc ftu apps ninite anygame fitgirl ocean of games poki gamaverse crazygames now gg games emulators fun fake update windows pcjs old emulator os system">
+  <div class="tool-header" onclick="toggleCollapse('otherToolsContent', 'otherToolsArrow')" style="cursor:pointer; user-select:none;" title="Click to expand/collapse">
+    <h3 style="display:flex;align-items:center;">🧰 Other Tools <span id="otherToolsArrow" style="font-size:10px;color:var(--sub);margin-left:8px;transition:transform 0.2s;transform:rotate(-90deg);">▼</span></h3>
+    <button class="star-btn" onclick="event.stopPropagation(); toggleFav(this,'Other Tools')">☆</button>
   </div>
-  <div class="button-row">
-    <button class="btn-gray" onclick="window.open('https://proxyium.com/', '_blank')">Proxyium</button>
-    <button class="btn-gray" onclick="window.open('https://www.croxyproxy.com/', '_blank')">CroxyProxy</button>
-    <button class="btn-gray" onclick="window.open('https://fast.com/#', '_blank')">Fast.com</button>
-    <button class="btn-gray" onclick="window.open('https://pairdrop.net/', '_blank')">PairDrop</button>
-  </div>
-</div>
+  
+  <div id="otherToolsContent" style="display:none; margin-top:10px;">
+    <label style="font-size:13px;font-weight:bold;display:block;color:var(--sub);">Internet:</label>
+    <div class="button-row">
+      <button class="btn-gray" onclick="window.open('https://proxyium.com/', '_blank')">Proxyium</button>
+      <button class="btn-gray" onclick="window.open('https://www.croxyproxy.com/', '_blank')">CroxyProxy</button>
+      <button class="btn-gray" onclick="window.open('https://fast.com/#', '_blank')">Fast.com</button>
+      <button class="btn-gray" onclick="window.open('https://pairdrop.net/', '_blank')">PairDrop</button>
+    </div>
 
-<div class="tool-box" data-tool="online tools it-tools tinywow pdf tools io free remove bg canva polotno jpg web partition disk">
-  <div class="tool-header">
-    <h3>🛠️ Online Tools</h3>
-    <button class="star-btn" onclick="toggleFav(this,'Online Tools')">☆</button>
-  </div>
-  <div class="button-row">
-    <button class="btn-gray" onclick="window.open('https://it-tools.tech/', '_blank')">IT Tools</button>
-    <button class="btn-gray" onclick="window.open('https://tinywow.com/', '_blank')">TinyWow Tools</button>
-    <button class="btn-gray" onclick="window.open('https://tools.pdf24.org/en/all-tools', '_blank')">PDF Tools</button>
-    <button class="btn-gray" onclick="window.open('https://10015.io/', '_blank')">Tools io</button>
-    <button class="btn-gray" onclick="window.open('https://mrfreetools.com/tools/', '_blank')">All Free Tools</button>
-    <button class="btn-gray" onclick="window.open('https://www.remove.bg/', '_blank')">Remove BG</button>
-    <button class="btn-gray" onclick="window.open('https://studio.polotno.com/', '_blank')">Canva Alternative</button>
-    <button class="btn-gray" onclick="window.open('https://jpg2pdf.com/', '_blank')">JPG to PDF</button>
-    <button class="btn-gray" onclick="window.open('https://www.web2pdfconvert.com/', '_blank')">WEB to PDF</button>
-    <button class="btn-gray" onclick="window.open('https://partition.toolpie.com/', '_blank')">Disk Partition Calc</button>
-  </div>
-</div>
+    <hr style="border-color:var(--border);margin:14px 0;">
 
-<div class="tool-box" data-tool="ai study tools text human krea speechify plagiarism sentencer handwriting typing test">
-  <div class="tool-header">
-    <h3>🧠 AI & Study Tools</h3>
-    <button class="star-btn" onclick="toggleFav(this,'AI & Study Tools')">☆</button>
-  </div>
-  <div class="button-row">
-    <button class="btn-gray" onclick="window.open('https://aitohumanconverter.com/', '_blank')">AI to Human Text</button>
-    <button class="btn-gray" onclick="window.open('https://www.krea.ai/', '_blank')">Krea AI</button>
-    <button class="btn-gray" onclick="window.open('https://speechify.com/', '_blank')">Speechify</button>
-    <button class="btn-gray" onclick="window.open('https://plagiarismdetector.net/', '_blank')">Plagiarism Check</button>
-    <button class="btn-gray" onclick="window.open('https://www.csgenerator.com/', '_blank')">Pro Sentencer</button>
-    <button class="btn-gray" onclick="window.open('https://texttohandwriting.com/', '_blank')">Text to Handwriting</button>
-    <button class="btn-gray" onclick="window.open('https://www.typing.com/student/tests', '_blank')">Typing Test</button>
-  </div>
-</div>
+    <label style="font-size:13px;font-weight:bold;display:block;color:var(--sub);">Online Tools:</label>
+    <div class="button-row">
+      <button class="btn-gray" onclick="window.open('https://it-tools.tech/', '_blank')">IT Tools</button>
+      <button class="btn-gray" onclick="window.open('https://tinywow.com/', '_blank')">TinyWow Tools</button>
+      <button class="btn-gray" onclick="window.open('https://tools.pdf24.org/en/all-tools', '_blank')">PDF Tools</button>
+      <button class="btn-gray" onclick="window.open('https://10015.io/', '_blank')">Tools io</button>
+      <button class="btn-gray" onclick="window.open('https://mrfreetools.com/tools/', '_blank')">All Free Tools</button>
+      <button class="btn-gray" onclick="window.open('https://www.remove.bg/', '_blank')">Remove BG</button>
+      <button class="btn-gray" onclick="window.open('https://studio.polotno.com/', '_blank')">Canva Alternative</button>
+      <button class="btn-gray" onclick="window.open('https://jpg2pdf.com/', '_blank')">JPG to PDF</button>
+      <button class="btn-gray" onclick="window.open('https://www.web2pdfconvert.com/', '_blank')">WEB to PDF</button>
+      <button class="btn-gray" onclick="window.open('https://partition.toolpie.com/', '_blank')">Disk Partition Calc</button>
+    </div>
 
-<div class="tool-box" data-tool="software downloads opendirectory archive filecr getintopc ftu apps ninite anygame fitgirl ocean of games poki gamaverse crazygames now gg games">
-  <div class="tool-header">
-    <h3>💾 Software Downloads & Games</h3>
-    <button class="star-btn" onclick="toggleFav(this,'Software Downloads')">☆</button>
-  </div>
-  <div class="button-row">
-    <button class="btn-gray" onclick="window.open('https://ewasion.github.io/opendirectory-finder/', '_blank')">OpenDirectory</button>
-    <button class="btn-gray" onclick="window.open('https://archive.org/', '_blank')">Archive.org</button>
-    <button class="btn-gray" onclick="window.open('https://filecr.com/en/?id=878271680000', '_blank')">FileCR</button>
-    <button class="btn-gray" onclick="window.open('https://getintopc.com/', '_blank')">GetIntoPC</button>
-    <button class="btn-gray" onclick="window.open('https://ftuapps.dev', '_blank')">FTU Apps</button>
-    <button class="btn-gray" onclick="window.open('https://ninite.com/', '_blank')">Bundle pkg</button>
-    <button class="btn-gray" onclick="window.open('https://anygame.net/', '_blank')">AnyGame</button>
-    <button class="btn-gray" onclick="window.open('http://fitgirl-repacks.site/', '_blank')">FitGirl Games</button>
-    <button class="btn-gray" onclick="window.open('http://oceanofgames.com/', '_blank')">Ocean Of Games</button>
-    <button class="btn-gray" onclick="window.open('https://poki.com/', '_blank')">Online Games #1</button>
-    <button class="btn-gray" onclick="window.open('https://gamaverse.com/', '_blank')">Online Games #2</button>
-    <button class="btn-gray" onclick="window.open('https://www.crazygames.com/', '_blank')">Online Games #3</button>
-    <button class="btn-gray" onclick="window.open('https://now.gg/', '_blank')">Online Games #4</button>
-  </div>
-</div>
+    <hr style="border-color:var(--border);margin:14px 0;">
 
-<div class="tool-box" data-tool="emulators fun fake update windows pcjs old emulator os system">
-  <div class="tool-header">
-    <h3>🕹️ Emulators / Fun</h3>
-    <button class="star-btn" onclick="toggleFav(this,'Emulators / Fun')">☆</button>
-  </div>
-  <div class="button-row">
-    <button class="btn-gray" onclick="window.open('https://fakeupdate.net/', '_blank')">Fake Update</button>
-    <button class="btn-gray" onclick="window.open('https://anand-3399.github.io/Hactoberfest-Windows11/', '_blank')">Fake Windows</button>
-    <button class="btn-gray" onclick="window.open('https://www.pcjs.org/', '_blank')">Old Windows Emulator</button>
-  </div>
-</div>
+    <label style="font-size:13px;font-weight:bold;display:block;color:var(--sub);">AI & Study Tools:</label>
+    <div class="button-row">
+      <button class="btn-gray" onclick="window.open('https://aitohumanconverter.com/', '_blank')">AI to Human Text</button>
+      <button class="btn-gray" onclick="window.open('https://www.krea.ai/', '_blank')">Krea AI</button>
+      <button class="btn-gray" onclick="window.open('https://speechify.com/', '_blank')">Speechify</button>
+      <button class="btn-gray" onclick="window.open('https://plagiarismdetector.net/', '_blank')">Plagiarism Check</button>
+      <button class="btn-gray" onclick="window.open('https://www.csgenerator.com/', '_blank')">Pro Sentencer</button>
+      <button class="btn-gray" onclick="window.open('https://texttohandwriting.com/', '_blank')">Text to Handwriting</button>
+      <button class="btn-gray" onclick="window.open('https://www.typing.com/student/tests', '_blank')">Typing Test</button>
+    </div>
 
-  <div id="usagePanelInner">
-    <h4>🔥 Tool Usage (All Users)</h4>
-    <div id="usageList"><div style="color:var(--sub);font-size:13px;">Loading...</div></div>
-    <div style="margin-top:10px;font-size:11px;color:var(--sub);text-align:center;">Updates live · Shared globally</div>
+    <hr style="border-color:var(--border);margin:14px 0;">
+
+    <label style="font-size:13px;font-weight:bold;display:block;color:var(--sub);">Software & Games:</label>
+    <div class="button-row">
+      <button class="btn-gray" onclick="window.open('https://ewasion.github.io/opendirectory-finder/', '_blank')">OpenDirectory</button>
+      <button class="btn-gray" onclick="window.open('https://archive.org/', '_blank')">Archive.org</button>
+      <button class="btn-gray" onclick="window.open('https://filecr.com/en/?id=878271680000', '_blank')">FileCR</button>
+      <button class="btn-gray" onclick="window.open('https://getintopc.com/', '_blank')">GetIntoPC</button>
+      <button class="btn-gray" onclick="window.open('https://ftuapps.dev', '_blank')">FTU Apps</button>
+      <button class="btn-gray" onclick="window.open('https://ninite.com/', '_blank')">Bundle pkg</button>
+      <button class="btn-gray" onclick="window.open('https://anygame.net/', '_blank')">AnyGame</button>
+      <button class="btn-gray" onclick="window.open('http://fitgirl-repacks.site/', '_blank')">FitGirl Games</button>
+      <button class="btn-gray" onclick="window.open('http://oceanofgames.com/', '_blank')">Ocean Of Games</button>
+      <button class="btn-gray" onclick="window.open('https://poki.com/', '_blank')">Online Games #1</button>
+      <button class="btn-gray" onclick="window.open('https://gamaverse.com/', '_blank')">Online Games #2</button>
+      <button class="btn-gray" onclick="window.open('https://www.crazygames.com/', '_blank')">Online Games #3</button>
+      <button class="btn-gray" onclick="window.open('https://now.gg/', '_blank')">Online Games #4</button>
+    </div>
+
+    <hr style="border-color:var(--border);margin:14px 0;">
+
+    <label style="font-size:13px;font-weight:bold;display:block;color:var(--sub);">Emulators / Fun:</label>
+    <div class="button-row">
+      <button class="btn-gray" onclick="window.open('https://fakeupdate.net/', '_blank')">Fake Update</button>
+      <button class="btn-gray" onclick="window.open('https://anand-3399.github.io/Hactoberfest-Windows11/', '_blank')">Fake Windows</button>
+      <button class="btn-gray" onclick="window.open('https://www.pcjs.org/', '_blank')">Old Windows Emulator</button>
+    </div>
   </div>
 </div>
 
@@ -499,6 +484,21 @@ pre{background:var(--console-bg)!important;color:var(--console-text)!important;p
 <script src="https://cdn.jsdelivr.net/npm/pdf-lib/dist/pdf-lib.min.js"></script>
 
 <script>
+/* ═══════════════════════════════════════
+   COLLAPSE TOGGLE
+═══════════════════════════════════════ */
+function toggleCollapse(contentId, arrowId) {
+  const el = document.getElementById(contentId);
+  const arrow = document.getElementById(arrowId);
+  if (el.style.display === "none") {
+    el.style.display = "block";
+    arrow.style.transform = "rotate(0deg)";
+  } else {
+    el.style.display = "none";
+    arrow.style.transform = "rotate(-90deg)";
+  }
+}
+
 /* ═══════════════════════════════════════
    THEME
 ═══════════════════════════════════════ */
@@ -1044,53 +1044,6 @@ async function shareQR(){
 }
 
 /* ═══════════════════════════════════════
-   USAGE TRACKER (Global / Shared)
-═══════════════════════════════════════ */
-// ⚠️ Replace with your deployed Apps Script URL after deployment
-const TRACKER_URL = "https://script.google.com/macros/s/AKfycbxaTUttsJdR9t9orNSbee3AdG2p0I9GzltTlt5hd4V-6LFKBDxGgb2PBrY-GOeYv3v4/exec";
-
-let cbTrack = 0;
-function trackJsonp(params, cb) {
-  if (!TRACKER_URL || TRACKER_URL.includes("PASTE")) return;
-  const name = "_tc" + (++cbTrack);
-  window[name] = function(data) { delete window[name]; const el=document.getElementById(name); if(el) document.head.removeChild(el); if(cb) cb(data); };
-  params.callback = name;
-  const qs = Object.entries(params).map(([k,v])=>encodeURIComponent(k)+"="+encodeURIComponent(v)).join("&");
-  const s = document.createElement("script"); s.id=name; s.src=TRACKER_URL+"?"+qs; document.head.appendChild(s);
-}
-
-async function getVisitorInfo() {
-  let ip="?", country="?", city="?";
-  try {
-    const d = await (await fetch("https://ipapi.co/json/")).json();
-    ip = d.ip||"?"; country = d.country_name||"?"; city = d.city||"?";
-  } catch(e) {}
-  const ua = navigator.userAgent;
-  let browser = "Unknown";
-  if(/Edg/.test(ua)) browser="Edge";
-  else if(/OPR|Opera/.test(ua)) browser="Opera";
-  else if(/Chrome/.test(ua)) browser="Chrome";
-  else if(/Firefox/.test(ua)) browser="Firefox";
-  else if(/Safari/.test(ua)) browser="Safari";
-  return { ip, country, city, browser, os: navigator.platform||"?" };
-}
-
-async function trackUsage(toolName) {
-  const info = await getVisitorInfo();
-  trackJsonp({
-    action: "increment",
-    tool: toolName,
-    ip: info.ip,
-    country: info.country,
-    city: info.city,
-    browser: info.browser,
-    os: info.os
-  }, null);
-}
-
-
-
-/* ═══════════════════════════════════════
    KEYBOARD SHORTCUTS
 ═══════════════════════════════════════ */
 function showToast(msg, dur=1800) {
@@ -1183,37 +1136,6 @@ ${"─".repeat(40)}
   a.click();
   showToast("✅ Exported!");
 }
-
-/* ═══════════════════════════════════════
-   HOOK trackUsage into tool buttons
-═══════════════════════════════════════ */
-// Wrap key action functions to auto-track
-const _trackWrap = (fn, name) => function(...args) { trackUsage(name); return fn.apply(this, args); };
-window.addEventListener("load", () => {
-  calculateSubnet   = _trackWrap(calculateSubnet,   "Subnet Calculator");
-  encodeB64         = _trackWrap(encodeB64,         "Base64 Encode/Decode");
-  decodeB64         = _trackWrap(decodeB64,         "Base64 Encode/Decode");
-  convertNumber     = _trackWrap(convertNumber,      "Hex/Dec/Bin Converter");
-  genPass           = _trackWrap(genPass,            "Password Generator");
-  lookupMac         = _trackWrap(lookupMac,          "MAC Vendor Lookup");
-  getIpInfo         = _trackWrap(getIpInfo,          "Network Tools");
-  urlToIp           = _trackWrap(urlToIp,            "Network Tools");
-  dnsLookup         = _trackWrap(dnsLookup,          "Network Tools");
-  checkHosting      = _trackWrap(checkHosting,       "Network Tools");
-  shortenURL        = _trackWrap(shortenURL,         "Network Tools");
-  startMonitoring   = _trackWrap(startMonitoring,    "Ping Monitor");
-  runDiff           = _trackWrap(runDiff,            "Text Diff");
-  showSystemInfo    = _trackWrap(showSystemInfo,     "System Info");
-  mergePDFs         = _trackWrap(mergePDFs,          "PDF Tools");
-  splitPDF          = _trackWrap(splitPDF,           "PDF Tools");
-  compressPDF       = _trackWrap(compressPDF,        "PDF Tools");
-  watermarkPDF      = _trackWrap(watermarkPDF,       "PDF Tools");
-  rotatePDF         = _trackWrap(rotatePDF,          "PDF Tools");
-  startUpload       = _trackWrap(startUpload,        "Drive Upload + QR");
-  genQR             = _trackWrap(genQR,              "QR Code Generator");
-  genBarcode        = _trackWrap(genBarcode,         "Barcode Generator");
-});
-
 </script>
 </body>
 </html>
