@@ -103,32 +103,7 @@ pre{background:var(--console-bg)!important;color:var(--console-text)!important;p
   .tool-box{padding:14px;}
 }
 
-/* USAGE STATS PANEL */
-#usagePanel {
-  position:fixed; right:0; top:50%; transform:translateY(-50%);
-  width:260px; background:var(--box-bg); border:1px solid var(--border);
-  border-right:none; border-radius:12px 0 0 12px;
-  box-shadow:-4px 0 20px rgba(0,0,0,0.15);
-  z-index:500; transition:transform .3s ease;
-  transform:translateY(-50%) translateX(220px);
-}
-#usagePanel:hover, #usagePanel.open {
-  transform:translateY(-50%) translateX(0);
-}
-#usagePanelTab {
-  position:absolute; left:-36px; top:50%; transform:translateY(-50%);
-  background:var(--accent); color:#fff; width:36px; height:60px;
-  border-radius:8px 0 0 8px; display:flex; align-items:center;
-  justify-content:center; cursor:pointer; font-size:18px; writing-mode:vertical-rl;
-  font-size:13px; letter-spacing:1px; padding:6px 0;
-}
-#usagePanelInner { padding:14px; max-height:70vh; overflow-y:auto; }
-#usagePanelInner h4 { margin-bottom:10px; font-size:14px; color:var(--sub); text-transform:uppercase; letter-spacing:1px; }
-.usage-row { display:flex; justify-content:space-between; align-items:center; padding:6px 0; border-bottom:1px solid var(--border); font-size:13px; }
-.usage-row:last-child { border-bottom:none; }
-.usage-bar-wrap { width:100%; background:var(--border); border-radius:4px; height:4px; margin-top:3px; }
-.usage-bar { height:4px; border-radius:4px; background:var(--accent); transition:width .5s; }
-.usage-count { font-weight:bold; color:var(--accent); min-width:32px; text-align:right; }
+
 
 /* EXPORT + SHORTCUT TOAST */
 #kbToast {
@@ -467,13 +442,10 @@ pre{background:var(--console-bg)!important;color:var(--console-text)!important;p
 </div>
 
 
-<!-- USAGE STATS PANEL -->
-<div id="usagePanel">
-  <div id="usagePanelTab" onclick="toggleUsagePanel()">📊 Stats</div>
   <div id="usagePanelInner">
-    <h4>Tool Usage</h4>
+    <h4>🔥 Tool Usage (All Users)</h4>
     <div id="usageList"><div style="color:var(--sub);font-size:13px;">Loading...</div></div>
-    <div style="margin-top:10px;font-size:11px;color:var(--sub);text-align:center;"></div>
+    <div style="margin-top:10px;font-size:11px;color:var(--sub);text-align:center;">Updates live · Shared globally</div>
   </div>
 </div>
 
@@ -1039,7 +1011,7 @@ async function shareQR(){
    USAGE TRACKER (Global / Shared)
 ═══════════════════════════════════════ */
 // ⚠️ Replace with your deployed Apps Script URL after deployment
-const TRACKER_URL = "https://script.google.com/macros/s/AKfycbx5zOYwkqbNB6PBGFxMvn1-iQJv7uAj777MXMTzcK0HDr7qvLIBjefSDEBIGPaHw4Z9/exec";
+const TRACKER_URL = "https://script.google.com/macros/s/AKfycbwuOiQuHtxzzdngbZ1_RX900SAcImgqPxkLKYGV-5EZ8hC6lgfsroZAwPEpFunjYomO/exec";
 
 let cbTrack = 0;
 function trackJsonp(params, cb) {
@@ -1051,38 +1023,36 @@ function trackJsonp(params, cb) {
   const s = document.createElement("script"); s.id=name; s.src=TRACKER_URL+"?"+qs; document.head.appendChild(s);
 }
 
-function trackUsage(toolName) {
-  trackJsonp({ action: "increment", tool: toolName }, function(data) {
-    if (data && data.count !== undefined) refreshUsagePanel();
-  });
+async function getVisitorInfo() {
+  let ip="?", country="?", city="?";
+  try {
+    const d = await (await fetch("https://ipapi.co/json/")).json();
+    ip = d.ip||"?"; country = d.country_name||"?"; city = d.city||"?";
+  } catch(e) {}
+  const ua = navigator.userAgent;
+  let browser = "Unknown";
+  if(/Edg/.test(ua)) browser="Edge";
+  else if(/OPR|Opera/.test(ua)) browser="Opera";
+  else if(/Chrome/.test(ua)) browser="Chrome";
+  else if(/Firefox/.test(ua)) browser="Firefox";
+  else if(/Safari/.test(ua)) browser="Safari";
+  return { ip, country, city, browser, os: navigator.platform||"?" };
 }
 
-function refreshUsagePanel() {
-  trackJsonp({ action: "getAll" }, function(data) {
-    if (!Array.isArray(data)) return;
-    const list = document.getElementById("usageList");
-    if (!data.length) { list.innerHTML = '<div style="color:var(--sub);font-size:13px;">No data yet</div>'; return; }
-    const maxCount = data[0].count || 1;
-    list.innerHTML = data.map(d => `
-      <div class="usage-row">
-        <div style="flex:1;min-width:0;">
-          <div style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${d.tool}</div>
-          <div class="usage-bar-wrap"><div class="usage-bar" style="width:${Math.round((d.count/maxCount)*100)}%"></div></div>
-        </div>
-        <div class="usage-count">${d.count}</div>
-      </div>`).join("");
-  });
+async function trackUsage(toolName) {
+  const info = await getVisitorInfo();
+  trackJsonp({
+    action: "increment",
+    tool: toolName,
+    ip: info.ip,
+    country: info.country,
+    city: info.city,
+    browser: info.browser,
+    os: info.os
+  }, null);
 }
 
-function toggleUsagePanel() {
-  const p = document.getElementById("usagePanel");
-  p.classList.toggle("open");
-  if (p.classList.contains("open")) refreshUsagePanel();
-}
 
-// Load stats on page load
-setTimeout(refreshUsagePanel, 1000);
-setInterval(refreshUsagePanel, 30000);
 
 /* ═══════════════════════════════════════
    KEYBOARD SHORTCUTS
